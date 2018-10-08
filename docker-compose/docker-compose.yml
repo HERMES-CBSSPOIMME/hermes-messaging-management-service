@@ -33,6 +33,7 @@ services:
   redis-cache:
     image: redis:4
     container_name: redis-cache
+    restart: always
     ports:
       - "6379:6379"
     restart: always
@@ -40,6 +41,7 @@ services:
   redis-heartbeat:
     image: redis:4
     container_name: redis-heartbeat
+    restart: always
     ports:
       - "6380:6379"
     restart: always
