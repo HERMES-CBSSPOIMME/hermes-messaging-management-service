@@ -5,9 +5,9 @@ services:
     restart: always
     ports:
       - "5672:5672"
-      - "8082:15672"
+      - "15672:15672"
     hostname: hermes-rabbit
-    container_name: rabbitmq
+    container_name: hermes_rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=root
       - RABBITMQ_DEFAULT_PASS=example
@@ -15,14 +15,14 @@ services:
   mongo:
     image: mongo:4
     restart: always
-    container_name: mongoDB
+    container_name: hermes_mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
 
   mongo-express:
     image: mongo-express
-    container_name: mongoExpress
+    container_name: hermes_mongoexpress
     restart: always
     ports:
       - "8081:8081"
@@ -32,7 +32,7 @@ services:
 
   redis-cache:
     image: redis:4
-    container_name: redis-cache
+    container_name: hermes_redis-cache
     restart: always
     ports:
       - "6379:6379"
@@ -40,7 +40,7 @@ services:
 
   redis-heartbeat:
     image: redis:4
-    container_name: redis-heartbeat
+    container_name: hermes_redis-realtime
     restart: always
     ports:
       - "6380:6379"
