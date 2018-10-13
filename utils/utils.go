@@ -1,12 +1,8 @@
 package utils
 
 import (
+	// Native Go Libs
 	log "log"
-	"net/http"
-)
-
-type (
-	Handler func(w http.ResponseWriter, r *http.Request) error
 )
 
 // PanicOnError : Prints the error & exits the program

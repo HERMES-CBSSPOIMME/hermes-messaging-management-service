@@ -1,11 +1,14 @@
 package router
 
 import (
-	"fmt"
-
 	// Native Go Libs
-	"hermes-messaging-service/models"
+	errors "errors"
 	http "net/http"
+
+	// Project Libs
+	auth "hermes-messaging-service/auth"
+	models "hermes-messaging-service/models"
+	checkers "hermes-messaging-service/validation/checkers"
 
 	// 3rd Party Libs
 	gocustomhttpresponse "github.com/terryvogelsang/gocustomhttpresponse"
@@ -13,30 +16,44 @@ import (
 )
 
 type (
+	// Handler : Custom type to work with CustomHandle wrapper
 	Handler func(env *models.Env, w http.ResponseWriter, r *http.Request) error
 )
 
-type Greeter struct {
-	Message string
-}
+// AddVerneMQACL : Construct and store VerneMQ ACL in database
+func AddVerneMQACL(env *models.Env, w http.ResponseWriter, r *http.Request) error {
 
-// HelloWorld : A Simple HelloWorld Endpoint
-func HelloWorld(env *models.Env, w http.ResponseWriter, r *http.Request) error {
+	// Retrieve token from request header
+	token := r.Header.Get("token")
 
-	// Logging demo
-	log := logruswrapper.NewEntry("UsersService", "/helloworld", logruswrapper.CodeSuccess)
-	logruswrapper.Info(log)
+	// Check if token has valid format (According to regex provided by environment variable)
+	tokenHasValidFormat := checkers.IsTokenValid(token)
 
-	err := env.DB.AddUserACL("testclientid", "testusername", "testpassword")
-
-	if err != nil {
-		fmt.Println(err)
-		return err
+	// If token is not formatted correctly, return an error response
+	if !tokenHasValidFormat {
+		return errors.New(logruswrapper.CodeInvalidToken)
 	}
 
-	greeter := Greeter{Message: "Hello World"}
+	// Check authentication with provided endpoint
+	MQTTAuthInfos, err := auth.CheckAuthentication(env, token)
 
-	gocustomhttpresponse.WriteResponse(greeter, log, w)
+	// If an error occurs, token is invalid
+	if err != nil {
+		return errors.New(logruswrapper.CodeInvalidToken)
+	}
+
+	// Construct MQTT User ACL with MQTT Auth Infos
+	verneMQACL := models.NewVerneMQACL(MQTTAuthInfos.ClientID, MQTTAuthInfos.Username, MQTTAuthInfos.Password)
+
+	err = env.DB.AddUserACL(verneMQACL)
+
+	if err != nil {
+		return errors.New(logruswrapper.CodeInvalidToken)
+	}
+
+	log := logruswrapper.NewEntry("MessagingService", "/helloworld", logruswrapper.CodeSuccess)
+
+	gocustomhttpresponse.WriteResponse(nil, log, w)
 	return nil
 }
 
@@ -46,7 +63,8 @@ func CustomHandle(env *models.Env, handlers ...Handler) http.Handler {
 		for _, h := range handlers {
 			err := h(env, w, r)
 			if err != nil {
-				// w.Write(getResponseOfError(err))
+				errorLog := logruswrapper.NewEntry("MessagingService", "/helloworld", err.Error())
+				gocustomhttpresponse.WriteResponse(nil, errorLog, w)
 				return
 			}
 		}

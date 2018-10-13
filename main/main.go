@@ -1,9 +1,13 @@
 package main
 
 import (
+	// Native Go Libs
 	fmt "fmt"
+	os "os"
+
+	// Project Libs
 	models "hermes-messaging-service/models"
-	"hermes-messaging-service/router"
+	router "hermes-messaging-service/router"
 )
 
 var (
@@ -38,6 +42,9 @@ func main() {
 	// Add MongoDB Interface to the environment
 	env := &models.Env{
 		DB: mongoDB,
+		Config: models.Config{
+			AuthenticationCheckEndpoint: os.Getenv("HERMES_AUTH_CHECK_ENDPOINT"),
+		},
 	}
 
 	router.Listen(env)

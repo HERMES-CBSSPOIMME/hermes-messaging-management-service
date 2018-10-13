@@ -1,10 +1,28 @@
 package models
 
+// VerneMQACL : VerneMQ ACL
 type VerneMQACL struct {
 	Mountpoint   string   `json:"mountpoint" bson:"mountpoint"`
-	ClientID     string   `json:"client_id" bson:"client_id"`
+	ClientID     string   `json:"clientID" bson:"client_id"`
 	Username     string   `json:"username" bson:"username"`
 	Passhash     string   `json:"passhash" bson:"passhash"`
 	PublishACL   []string `json:"publish_acl" bson:"publish_acl"`
 	SubscribeACL []string `json:"subscribe_acl" bson:"subscribe_acl"`
+}
+
+// MQTTAuthInfos : MQTT auth informations
+type MQTTAuthInfos struct {
+	ClientID string `json:"clientID"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// NewVerneMQACL : Return new VerneMQACL struct pointer
+func NewVerneMQACL(clientID string, username string, password string) *VerneMQACL {
+	return &VerneMQACL{
+		Mountpoint: "",
+		ClientID:   clientID,
+		Username:   username,
+		Passhash:   password,
+	}
 }

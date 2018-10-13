@@ -4,11 +4,11 @@ import (
 
 	// Native Go Libs
 	fmt "fmt"
-	models "hermes-messaging-service/models"
-	handlers "hermes-messaging-service/router/handlers"
 	http "net/http"
 
 	// Project Libs
+	models "hermes-messaging-service/models"
+	handlers "hermes-messaging-service/router/handlers"
 
 	// 3rd Party Libs
 	mux "github.com/gorilla/mux"
@@ -29,8 +29,8 @@ func Listen(env *models.Env) {
 	v1 := r.PathPrefix("/v1").Subrouter()
 
 	// HelloWorld Endpoint
-	helloWorldV1 := v1.PathPrefix("/helloworld").Subrouter()
-	helloWorldV1.Handle("", handlers.CustomHandle(env, handlers.HelloWorld)).Methods("GET")
+	aclV1 := v1.PathPrefix("/acl").Subrouter()
+	aclV1.Handle("", handlers.CustomHandle(env, handlers.AddVerneMQACL)).Methods("POST")
 
 	corsHandler := cors.New(cors.Options{
 		AllowedHeaders:   []string{"X-Requested-With"},
