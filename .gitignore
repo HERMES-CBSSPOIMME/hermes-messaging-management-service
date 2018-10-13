@@ -12,5 +12,7 @@
 .out
 
 # VSCode
-
 .vscode/
+
+# Dep
+vendor/
