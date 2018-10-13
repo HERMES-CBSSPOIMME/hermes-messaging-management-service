@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # TODO: Change credentials handling method 
 
@@ -11,29 +11,15 @@ echo "Removing previous containers ..."
 echo "====================================================================================================="
 
 # Stop and remove previous container
-docker rm -f "${PROJECT}_rabbitmq"
+docker rm -f "${PROJECT}_vernemq"
 docker rm -f "${PROJECT}_mongodb"
 docker rm -f "${PROJECT}_mongoexpress"
-docker rm -f "${PROJECT}_redis-cache"
-docker rm -f "${PROJECT}_redis-realtime"
+docker rm -f "${PROJECT}_redis-sessions-cache"
+docker rm -f "${PROJECT}_redis-real-time"
 
 printf "\n"
 echo "====================================================================================================="
-echo "Creating containers ..."
+echo "Building & starting containers ..."
 echo "====================================================================================================="
-# Start services
-docker-compose -p $PROJECT up -d
-
-# Wait for containers initialization
-printf "\n"
-echo "Waiting on containers to initialize ..."
-
-sleep 10
-
-printf "\n"
-echo "====================================================================================================="
-echo "RabbitMQ Setup"
-echo "====================================================================================================="
-
-printf "\n"
-bash ./scripts/setup/setupRabbitMQ.sh
+# Build & start services
+docker-compose build && docker-compose -p $PROJECT up -d

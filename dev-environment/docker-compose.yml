@@ -1,24 +1,32 @@
+# TODO: Bind port 8888 to 8888 to enable prometheus metrics access
+
 version: '3'
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
+  vernemq:
+    build: vernemq/
+    image: hermes/vernemq
     restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    hostname: hermes-rabbit
-    container_name: hermes_rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=root
-      - RABBITMQ_DEFAULT_PASS=example
+      - "1883:1883"
+      - "8080:8080"
+    container_name: hermes_vernemq
+    links:
+      - mongodb
+    networks: 
+      - hermes
 
-  mongo:
-    image: mongo:4
+  mongodb:
+    build: mongodb/
+    image: hermes/mongo
     restart: always
     container_name: hermes_mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    networks: 
+      - hermes
 
   mongo-express:
     image: mongo-express
@@ -29,19 +37,29 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    networks: 
+      - hermes
 
-  redis-cache:
+  redis-sessions-cache:
     image: redis:4
-    container_name: hermes_redis-cache
+    container_name: hermes_redis-sessions-cache
     restart: always
     ports:
       - "6379:6379"
     restart: always
+    networks: 
+      - hermes
 
-  redis-heartbeat:
+  redis-real-time:
     image: redis:4
-    container_name: hermes_redis-realtime
+    container_name: hermes_redis-real-time
     restart: always
     ports:
       - "6380:6379"
     restart: always
+    networks: 
+      - hermes
+
+networks:
+  hermes:
+    driver: "bridge"
