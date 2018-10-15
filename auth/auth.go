@@ -1,7 +1,11 @@
 package auth
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/satori/go.uuid"
+
 	// Native Go Libs
 
 	errors "errors"
@@ -9,6 +13,7 @@ import (
 
 	// Project Libs
 	models "hermes-messaging-service/models"
+	"hermes-messaging-service/utils"
 )
 
 // CheckAuthentication : When a token is received :
@@ -30,10 +35,18 @@ func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, 
 		return nil, errors.New("No Token Provided")
 	}
 
-	client := &http.Client{}
+	// Check if token is cached in redis (GET session:{token})
+	cachedUserID, err := env.Redis.Get(fmt.Sprintf("session:%s", token))
 
-	// Refresh config to get actual environment variables
+	if cachedUserID != nil {
+		return models.NewMQTTAuthInfos(string(cachedUserID), token), nil
+	}
+
+	// Refresh config to get actual environment variables (Auth Endpoint in our case)
 	env.RefreshConfig()
+
+	// Create HTTP Client
+	client := &http.Client{}
 
 	// Init request
 	req, err := http.NewRequest("GET", env.Config.AuthenticationCheckEndpoint, nil)
@@ -63,25 +76,66 @@ func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, 
 	//
 	// HTTP Status Code : 200 (OK)
 	// Header(s) : content-type:application/json
-	// Empty Body
+	// {"UserID": "userID"}
 	if res.StatusCode == 200 {
 
-		MQTTAuthInfos := models.MQTTAuthInfos{}
+		// Parse response to get Original User ID
+		authCheckerBody := utils.AuthCheckerBody{}
+		json.NewDecoder(res.Body).Decode(&authCheckerBody)
 
-		clientID := uuid.NewV4().String()
+		// Check if originalUserID returned is already matched with one token (HGET mapping:originalUserID token)
+		cachedOldToken, _ := env.Redis.HGet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token")
 
-		// Set new UUID V4
-		MQTTAuthInfos.ClientID = clientID
+		// -> If yes,
+		if cachedOldToken != nil {
 
-		// Copy ClientID as Username
-		MQTTAuthInfos.Username = clientID
+			// Replace session:{oldToken}:{internalHermesUserID} by new token (RENAME session:{oldToken} session:{newToken}) in redis
+			err = env.Redis.Rename(fmt.Sprintf("session:%s", cachedOldToken), fmt.Sprintf("session:%s", token))
 
-		// Set token as password
-		MQTTAuthInfos.Password = token
+			if err != nil {
+				fmt.Println(err)
+				return nil, err
+			}
 
-		// TODO: Store session:{token} -> {hermesUserID} in redis
-		// - Store mapping:originalUserID -> [token, hermesUserID]
-		return &MQTTAuthInfos, nil
+			// Update mapping in redis (HSET mapping:originalUserID token {newToken} )
+			err = env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token", []byte(token))
+
+			if err != nil {
+				fmt.Println(err)
+				return nil, err
+			}
+		}
+		// -> If no, generate an internal hermesUserID
+		internalHermesUserID := uuid.NewV4().String()
+
+		// ---> Cache it in redis (SET session{newToken}:{internalHermesUserID})
+		err = env.Redis.Set(fmt.Sprintf("session:%s", token), []byte(internalHermesUserID))
+
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		// ---> Set mapping in redis (HSET mapping:originalUserID token {newToken} internalHermesUserID: {internalHermesUserID} )
+		// TODO: Change Hset method to be able to set multiple field at a time
+		err = env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token", []byte(token))
+
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		err = env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "internalHermesUserID", []byte(internalHermesUserID))
+
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		// Construct MQTTAuthInfos struct
+		MQTTAuthInfos := models.NewMQTTAuthInfos(internalHermesUserID, token)
+
+		return MQTTAuthInfos, nil
 	}
 
 	return nil, errors.New("Invalid Token")

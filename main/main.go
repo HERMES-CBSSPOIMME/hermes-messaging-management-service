@@ -3,7 +3,6 @@ package main
 import (
 	// Native Go Libs
 	fmt "fmt"
-	os "os"
 
 	// Project Libs
 	models "hermes-messaging-service/models"
@@ -38,6 +37,9 @@ var (
 	// RedisPort : Redis Port
 	RedisPort = 6379
 
+	// RedisPassword : Redis Password
+	RedisPassword = "example"
+
 	// RedisURL : Redis Connection URL
 	RedisURL = fmt.Sprintf("redis://%s:%d", RedisHost, RedisPort)
 )
@@ -50,16 +52,17 @@ func main() {
 
 	// Get Redis communication interface
 	// If an error occurs, program is set to panic
-	redis := models.NewRedis(RedisURL)
+	redis := models.NewRedis(RedisURL, RedisPassword)
 
-	// Add interfaces & config to the environment
+	// Add interfaces & blank config to the environment
 	env := &models.Env{
 		MongoDB: mongoDB,
 		Redis:   redis,
-		Config: models.Config{
-			AuthenticationCheckEndpoint: os.Getenv("HERMES_AUTH_CHECK_ENDPOINT"),
-		},
+		Config:  models.Config{},
 	}
+
+	// Dynamically load config
+	env.RefreshConfig()
 
 	router.Listen(env)
 

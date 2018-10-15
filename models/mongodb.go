@@ -32,9 +32,9 @@ const (
 // MongoDBInterface : MongoDB Communication interface
 type MongoDBInterface interface {
 	AddGroupConversation(groupConversation *GroupConversation) error
-	AddProfileACL(*VerneMQACL) error
-	AuthorizePublishing(string, string) error
-	UpdateProfilesWithGroupACL(*GroupConversation) error
+	AddProfileACL(verneMQACL *VerneMQACL) error
+	AuthorizePublishing(userID string, topic string) error
+	UpdateProfilesWithGroupACL(groupConversation *GroupConversation) error
 }
 
 // MongoDB : MongoDB communication interface

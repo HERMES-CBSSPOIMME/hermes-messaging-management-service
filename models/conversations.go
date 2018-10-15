@@ -6,7 +6,7 @@ import (
 
 // GroupConversation : Group conversation struct
 type GroupConversation struct {
-	GroupConversationID string   `json:"GroupConversationID bson:"groupConversationID"`
+	GroupConversationID string   `json:"GroupConversationID" bson:"groupConversationID"`
 	Name                string   `json:"name" bson:"name"`
 	Members             []string `json:"members" bson:"members"`
 	// TODO: Add message backup support

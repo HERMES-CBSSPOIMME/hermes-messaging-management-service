@@ -33,3 +33,13 @@ func NewVerneMQACL(clientID string, username string, password string) *VerneMQAC
 		PublishACL:   []string{PrivateConversationTopicPath + "+"},
 	}
 }
+
+// NewMQTTAuthInfos : Return new NewMQTTAuthInfos struct pointer
+func NewMQTTAuthInfos(clientID string, token string) *MQTTAuthInfos {
+
+	return &MQTTAuthInfos{
+		ClientID: clientID,
+		Username: clientID,
+		Password: token,
+	}
+}
