@@ -5,6 +5,11 @@ import (
 	log "log"
 )
 
+type GroupConversationBody struct {
+	Members []string `json="members"`
+	Name    string   `json:"name"`
+}
+
 // PanicOnError : Prints the error & exits the program
 func PanicOnError(err error, msg string) {
 	if err != nil {

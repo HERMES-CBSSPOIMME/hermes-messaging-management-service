@@ -1,8 +1,9 @@
 package auth
 
 import (
+	"github.com/satori/go.uuid"
 	// Native Go Libs
-	json "encoding/json"
+
 	errors "errors"
 	http "net/http"
 
@@ -10,7 +11,17 @@ import (
 	models "hermes-messaging-service/models"
 )
 
-// CheckAuthentication : Check authentication by executing a GET HTTP Request with token as "token" header value
+// CheckAuthentication : When a token is received :
+// (1) Check if token is cached in redis (GET session:{token})
+// -> If not it might be a new token for an already checked-in user
+//
+// (2) Check if originalUserID returned by a GET HTTP Request on provided auth endpoint with token as header value is already matched with one token (HGET mapping:originalUserID token)
+// -> If yes, replace session:{oldToken}:{internalHermesUserID} by new token (RENAME session:{oldToken} session:{newToken}) in redis
+// ---> Update mapping in redis (HSET mapping:originalUserID token {newToken} )
+// -> If no, generate an internal hermesUserID
+// ---> Cache it in redis (SET session{newToken}:{internalHermesUserID})
+// ---> Set mapping in redis (HSET mapping:originalUserID token {newToken} internalHermesUserID: {internalHermesUserID} )
+//
 // Return MQTT Auth Infos if provided auth token is valid, an error otherwise
 func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, error) {
 
@@ -20,6 +31,9 @@ func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, 
 	}
 
 	client := &http.Client{}
+
+	// Refresh config to get actual environment variables
+	env.RefreshConfig()
 
 	// Init request
 	req, err := http.NewRequest("GET", env.Config.AuthenticationCheckEndpoint, nil)
@@ -49,24 +63,24 @@ func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, 
 	//
 	// HTTP Status Code : 200 (OK)
 	// Header(s) : content-type:application/json
-	// Body : {"clientID": "userID"}
+	// Empty Body
 	if res.StatusCode == 200 {
 
 		MQTTAuthInfos := models.MQTTAuthInfos{}
 
-		// Set ClientID from response
-		err := json.NewDecoder(res.Body).Decode(&MQTTAuthInfos)
+		clientID := uuid.NewV4().String()
 
-		if err != nil {
-			return nil, err
-		}
+		// Set new UUID V4
+		MQTTAuthInfos.ClientID = clientID
 
 		// Copy ClientID as Username
-		MQTTAuthInfos.Username = MQTTAuthInfos.ClientID
+		MQTTAuthInfos.Username = clientID
 
 		// Set token as password
 		MQTTAuthInfos.Password = token
 
+		// TODO: Store session:{token} -> {hermesUserID} in redis
+		// - Store mapping:originalUserID -> [token, hermesUserID]
 		return &MQTTAuthInfos, nil
 	}
 

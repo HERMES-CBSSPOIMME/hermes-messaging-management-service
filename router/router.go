@@ -29,8 +29,11 @@ func Listen(env *models.Env) {
 	v1 := r.PathPrefix("/v1").Subrouter()
 
 	// HelloWorld Endpoint
-	aclV1 := v1.PathPrefix("/acl").Subrouter()
+	aclV1 := v1.PathPrefix("/profile").Subrouter()
 	aclV1.Handle("", handlers.CustomHandle(env, handlers.AddVerneMQACL)).Methods("POST")
+
+	conversationsV1 := v1.PathPrefix("/conversations").Subrouter()
+	conversationsV1.Handle("/group", handlers.CustomHandle(env, handlers.AddGroupConversation)).Methods("POST")
 
 	corsHandler := cors.New(cors.Options{
 		AllowedHeaders:   []string{"X-Requested-With"},

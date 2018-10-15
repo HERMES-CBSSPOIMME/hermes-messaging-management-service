@@ -31,17 +31,31 @@ var (
 
 	// MongoDBURL : MongoDB Connection URL
 	MongoDBURL = fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", MongoDBUsername, MongoDBPassword, MongoDBHost, MongoDBPort, MongoDBName)
+
+	// RedisHost : Redis Port
+	RedisHost = "localhost"
+
+	// RedisPort : Redis Port
+	RedisPort = 6379
+
+	// RedisURL : Redis Connection URL
+	RedisURL = fmt.Sprintf("redis://%s:%d", RedisHost, RedisPort)
 )
 
 func main() {
 
-	// Get MongoDB Communication Interface
+	// Get MongoDB communication interface
 	// If an error occurs, program is set to panic
 	mongoDB := models.NewMongoDB(MongoDBURL)
 
-	// Add MongoDB Interface to the environment
+	// Get Redis communication interface
+	// If an error occurs, program is set to panic
+	redis := models.NewRedis(RedisURL)
+
+	// Add interfaces & config to the environment
 	env := &models.Env{
-		DB: mongoDB,
+		MongoDB: mongoDB,
+		Redis:   redis,
 		Config: models.Config{
 			AuthenticationCheckEndpoint: os.Getenv("HERMES_AUTH_CHECK_ENDPOINT"),
 		},
@@ -50,6 +64,6 @@ func main() {
 	router.Listen(env)
 
 	defer func() {
-		// Close stuffs here
+		env.Redis.CloseConnection()
 	}()
 }

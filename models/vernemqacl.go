@@ -1,5 +1,10 @@
 package models
 
+const (
+	PrivateConversationTopicPath = "conversations/private/"
+	GroupConversationTopicPath   = "conversations/group/"
+)
+
 // VerneMQACL : VerneMQ ACL
 type VerneMQACL struct {
 	Mountpoint   string   `json:"mountpoint" bson:"mountpoint"`
@@ -20,9 +25,11 @@ type MQTTAuthInfos struct {
 // NewVerneMQACL : Return new VerneMQACL struct pointer
 func NewVerneMQACL(clientID string, username string, password string) *VerneMQACL {
 	return &VerneMQACL{
-		Mountpoint: "",
-		ClientID:   clientID,
-		Username:   username,
-		Passhash:   password,
+		Mountpoint:   "",
+		ClientID:     clientID,
+		Username:     username,
+		Passhash:     password,
+		SubscribeACL: []string{PrivateConversationTopicPath + clientID},
+		PublishACL:   []string{PrivateConversationTopicPath + "+"},
 	}
 }
