@@ -1,6 +1,6 @@
 # Hermes Messaging Management Microservice
 
-HERMES Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
+Hermes Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
 The system is designed with integration in mind in order to provide the developer with an easy to integrate a messaging service in his/her applications.
 
 ## Table of Contents
@@ -19,7 +19,7 @@ The system is designed with integration in mind in order to provide the develope
 
 ## Config
 
-HERMES requires these environment variables to be set :
+Hermes requires these environment variables to be set :
 
 |              Name             |                          Description                          |
 |:-----------------------------:|:-------------------------------------------------------------:|
@@ -31,7 +31,7 @@ HERMES requires these environment variables to be set :
 In order to be able to accept any kind of authentication system (JSON Web Token, Sessions, ...) we decided to map your application
 user identifiers and tokens with our own internal structures.
 
-The token remain preserved but application user identifiers are mapped with an internal HERMES user ID
+The token remain preserved but application user identifiers are mapped with an internal Hermes user ID
 under the form of an UUID V4. This allows us to easily map one user to its according topic.
 
 These mappings are stored in a Redis instance.
@@ -53,7 +53,7 @@ These mappings are stored in a Redis instance.
 
 ### Authentication 
 
-HERMES is designed in a way that its system doesn't need access to existing project databases, that for obvious security and integration reasons. 
+Hermes is designed in a way that its system doesn't need access to existing project databases, that for obvious security and integration reasons. 
 
 The identity **verification process must then be managed by your application side**.
 
@@ -62,9 +62,9 @@ Each request emitted to this service must contain the authentication token of yo
 
 The service will then verify the token authenticity by calling an external endpoint (Provided by your application) responsible to verify the received token and send back informations. 
 
-Internally, HERMES system will keep an internal mapping in a Redis instance matching your application users IDs and tokens with our internal identifiers and password.
+Internally, Hermes system will keep an internal mapping in a Redis instance matching your application users IDs and tokens with our internal identifiers and password.
 
-HERMES requires that your web server endpoint respond to requests in a certain predefined format. Our system will issue a `GET` request with a `token` HTTP header containing your application user token and an `empty body`.
+Hermes requires that your web server endpoint respond to requests in a certain predefined format. Our system will issue a `GET` request with a `token` HTTP header containing your application user token and an `empty body`.
 
 Your endpoint should respond the following :
 
@@ -93,7 +93,7 @@ Content-Length: 34
 
 At the MQTT level each user credentials are represented with the following mapping :
 
-|   MQTT   |        HERMES        |
+|   MQTT   |        Hermes        |
 |:--------:|:--------------------:|
 | clientID | internalHermesUserID |
 | username | internalHermesUserID |
