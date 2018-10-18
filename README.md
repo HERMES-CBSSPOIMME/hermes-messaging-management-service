@@ -122,12 +122,17 @@ VerneMQ ACLs are stored in a MongoDB Collection named `vmq_acl_auth` with the fo
 ```
 Note `passhash` field is a [bcrypt](https://godoc.org/golang.org/x/crypto/bcrypt) hash of the token.
 
+Unfortunately, MQTT doesn't provide any way to identify the sender of a message in a trustful manner. 
+
+To circumvent that, we designed a topic hierarchy granting us the ability to trustfully identify the sender of a message. Even if MQTT topic wildcards are used by the user to subscribe topics, a user will always receive the precise topic that forwarded the message along with the message payload. 
+
+This bring the user the ability to know exactly who's the sender of a message.
+
 ### Authorization
 
 MQTT Topics authorization are managed the following way :
 
 #### Private Conversations
-This serve as an authentication mechanism to identify a message sender, something that's not provided by MQTT.
 
 Each user gets assigned a sender topic prefix path under the form of `conversations/private/{internalHermesUserID}`. 
 
