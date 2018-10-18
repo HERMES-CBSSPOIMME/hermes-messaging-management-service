@@ -28,11 +28,10 @@ Hermes requires these environment variables to be set :
 
 Config file must have the following structure : 
 
-```json {
+```json
 {
     "authenticationCheckEndpoint": "https://www.myapp.com/myexternalauthendpoint",
     "tokenValidationRegex": "mytokenregex"
-}
 }
 ```
 
