@@ -6,6 +6,7 @@ The system is designed with integration in mind in order to provide the develope
 ## Table of Contents
 - [Hermes Messaging Management Microservice](#hermes-messaging-management-microservice)
     - [Table of Contents](#table-of-contents)
+    - [Config](#config)
     - [External/Internal Mapping](#externalinternal-mapping)
         - [Redis Stores](#redis-stores)
     - [Authentication & Authorization](#authentication--authorization)
@@ -15,6 +16,14 @@ The system is designed with integration in mind in order to provide the develope
         - [Authorization](#authorization)
             - [Private Conversations](#private-conversations)
             - [Group Conversations](#group-conversations)
+
+## Config
+
+HERMES requires these environment variables to be set :
+|              Name             |                          Description                          |
+|:-----------------------------:|:-------------------------------------------------------------:|
+|   HERMES_AUTH_CHECK_ENDPOINT  | External authentication endpoint provided by your application |
+| HERMES_TOKEN_VALIDATION_REGEX |           Token format validation regular expression          |
 
 ## External/Internal Mapping
 
