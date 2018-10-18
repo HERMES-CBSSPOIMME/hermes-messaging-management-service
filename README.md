@@ -124,13 +124,11 @@ Note `passhash` field is a [bcrypt](https://godoc.org/golang.org/x/crypto/bcrypt
 
 Unfortunately, MQTT doesn't provide any way to identify the sender of a message in a trustful manner. 
 
-To circumvent that, we designed a topic hierarchy granting us the ability to trustfully identify the sender of a message. Even if MQTT topic wildcards are used by the user to subscribe topics, a user will always receive the precise topic that forwarded the message along with the message payload. 
+To circumvent that, we designed a topic hierarchy granting us the ability to trustfully identify the sender of a message. Even if MQTT topic wildcards are used by the user to subscribe topics, a user will always receive the precise topic that forwarded the message. 
 
-This bring the user the ability to know exactly who's the sender of a message.
+This brings the user the ability to know exactly who's the sender of a message.
 
 ### Authorization
-
-MQTT Topics authorization are managed the following way :
 
 #### Private Conversations
 
@@ -163,6 +161,6 @@ This means the following MQTT ACLs are created for each user on group creation :
 | conversations/group/{groupID}/{internalHermesuserID}/+ |    ✅    |     ✅ <sup>1</sup>   |
 | conversations/group/{groupID}/+                        |    ❌     |    ✅               |
 
-<sup>1</sup> Implicit due to wildcard subscription. 
+<sup>1</sup> _Implicit due to wildcard subscription._
 
 Note that you'll have to discard messages client side as one user sending a message will also receive its own message due to this configuration. 
