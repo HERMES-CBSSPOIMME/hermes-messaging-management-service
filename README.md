@@ -133,7 +133,7 @@ In MQTT terms this means that on creation the user gets assigned the following A
 
 |              Topic                             | Publish | Subscribe |
 |:----------------------------------------------:|:-------:|:---------:|
-| conversations/private/{internalHermesuserID}/+ |    ✅    |     ❌   |
+| conversations/private/{internalHermesuserID}/+ |    ✅    |     ❌    |
 | conversations/private/+/{internalHermesuserID} |    ❌     |    ✅    |
 
 

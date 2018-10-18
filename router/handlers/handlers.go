@@ -65,7 +65,7 @@ func AddVerneMQACL(env *models.Env, w http.ResponseWriter, r *http.Request) erro
 
 	log := logruswrapper.NewEntry("MessagingService", "/helloworld", logruswrapper.CodeSuccess)
 
-	gocustomhttpresponse.WriteResponse(nil, log, w)
+	gocustomhttpresponse.WriteResponse(MQTTAuthInfos.ClientID, log, w)
 	return nil
 }
 
