@@ -40,12 +40,17 @@ func AddVerneMQACL(env *models.Env, w http.ResponseWriter, r *http.Request) erro
 	}
 
 	// Check authentication with provided endpoint
-	MQTTAuthInfos, wasCached, err := auth.CheckAuthentication(env, token)
+	MQTTAuthInfos, wasCached, wasTokenUpdated, err := auth.CheckAuthentication(env, token)
 
 	// If an error occurs, token is invalid
 	if err != nil {
 		log.Println(err)
 		return errors.New(logruswrapper.CodeInvalidToken)
+	}
+
+	if wasTokenUpdated {
+		log.Println("Token Updated")
+		return errors.New(logruswrapper.CodeUpdated)
 	}
 
 	if wasCached {
@@ -84,7 +89,7 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 	}
 
 	// Check authentication with provided endpoint
-	MQTTAuthInfos, _, err := auth.CheckAuthentication(env, token)
+	MQTTAuthInfos, _, _, err := auth.CheckAuthentication(env, token)
 
 	// If an error occurs, token is invalid
 	if err != nil {

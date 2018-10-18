@@ -1,7 +1,7 @@
 # Hermes Messaging Management Microservice
 
 Hermes Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
-The system is designed with integration in mind in order to provide the developer with an easy to integrate a messaging service in his/her applications.
+The system is designed with integration in mind in order to provide developers with an easy to integrate messaging service in their applications.
 
 ## Table of Contents
 - [Hermes Messaging Management Microservice](#hermes-messaging-management-microservice)
@@ -29,8 +29,7 @@ Hermes requires these environment variables to be set :
 
 ## External/Internal Mapping
 
-In order to be able to accept any kind of authentication system (JSON Web Token, Sessions, ...) we decided to map your application
-user identifiers and tokens with our own internal structures.
+In order to be able to accept any kind of authentication system (JSON Web Token, Sessions, ...) we decided to map your application user identifiers and tokens with our own internal structures.
 
 The token remain preserved but application user identifiers are mapped with an internal Hermes user ID
 under the form of an UUID V4. This allows us to easily map one user to its according topic.
@@ -144,10 +143,10 @@ Each user will then subscribe the `conversations/private/+/{internalHermesUserID
 
 In MQTT terms this means that on creation the user gets assigned the following ACLs :
 
-|              Topic                             | Publish | Subscribe |
-|:----------------------------------------------:|:-------:|:---------:|
-| conversations/private/{internalHermesuserID}/+ |    ✅    |     ❌    |
-| conversations/private/+/{internalHermesuserID} |    ❌     |    ✅    |
+|              Topic                             | Publish |     Subscribe      |
+|:----------------------------------------------:|:-------:|:------------------:|
+| conversations/private/{internalHermesuserID}/+ |    ✅    |   ✅ <sup>1</sup>  |
+| conversations/private/+/{internalHermesuserID} |    ❌    |   ✅               |
 
 
 #### Group Conversations
@@ -162,7 +161,7 @@ This means the following MQTT ACLs are created for each user on group creation :
   
 |              Topic                                     | Publish | Subscribe            |
 |:------------------------------------------------------:|:-------:|:--------------------:|
-| conversations/group/{groupID}/{internalHermesuserID}/+ |    ✅    |     ✅ <sup>1</sup>   |
+| conversations/group/{groupID}/{internalHermesuserID}/+ |    ✅    |     ✅ <sup>1</sup>  |
 | conversations/group/{groupID}/+                        |    ❌     |    ✅               |
 
 <sup>1</sup> _Implicit due to wildcard subscription._

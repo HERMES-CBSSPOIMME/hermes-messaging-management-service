@@ -20,17 +20,17 @@ import (
 )
 
 // CheckAuthentication : Return MQTT Auth Infos if provided auth token is valid,
-// an error if present and a boolean flag indicating if user was already cached
-func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, bool, error) {
+// an error if present, a boolean flag indicating if user was already cached and a boolean flag indicating wether token was updated in Redis
+func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, bool, bool, error) {
 
 	// If no token, return an error
 	if token == "" {
-		return nil, false, errors.New("No Token Provided")
+		return nil, false, false, errors.New("No Token Provided")
 	}
 
 	hashedToken, err := HashPassword(token)
 	if err != nil {
-		return nil, false, err
+		return nil, false, false, err
 	}
 
 	// Check if token is cached in Redis, Get UserID if it is
@@ -39,20 +39,20 @@ func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, 
 	if cachedInternalUserID != "" {
 
 		// If yes : Return the cached infos
-		return models.NewMQTTAuthInfos(cachedInternalUserID, hashedToken), true, nil
+		return models.NewMQTTAuthInfos(cachedInternalUserID, hashedToken), true, false, nil
 
 	} else {
 
 		// If no : Verify with external endpoint
 		env.RefreshConfig()
 
-		MQTTAuthInfos, wasCached, err := VerifyTokenWithExternalEndpoint(env, token, hashedToken)
+		MQTTAuthInfos, wasCached, wasTokenUpdated, err := VerifyTokenWithExternalEndpoint(env, token, hashedToken)
 
 		if err != nil {
-			return nil, false, err
+			return nil, false, false, err
 		}
 
-		return MQTTAuthInfos, wasCached, err
+		return MQTTAuthInfos, wasCached, wasTokenUpdated, nil
 	}
 }
 
@@ -80,7 +80,7 @@ func CheckIfTokenIsCached(env *models.Env, token string) (string, error) {
 }
 
 // VerifyTokenWithExternalEndpoint : Verify token with provided external auth endpoint
-func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken string) (*models.MQTTAuthInfos, bool, error) {
+func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken string) (*models.MQTTAuthInfos, bool, bool, error) {
 
 	// Create HTTP Client
 	client := &http.Client{}
@@ -89,7 +89,7 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 	req, err := http.NewRequest("GET", env.Config.AuthenticationCheckEndpoint, nil)
 
 	if err != nil {
-		return nil, false, err
+		return nil, false, false, err
 	}
 
 	// Add token header
@@ -98,7 +98,7 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 	// Execute request
 	res, err := client.Do(req)
 	if err != nil {
-		return nil, false, err
+		return nil, false, false, err
 	}
 
 	//=============================================================================
@@ -128,7 +128,7 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 			UpdateRedisAndMongoDBWithNewToken(env, authCheckerBody.OriginalUserID, cachedInternalHermesUserID, cachedOldToken, token, hashedToken)
 
 			// Return MQTTAuthInfos
-			return models.NewMQTTAuthInfos(cachedInternalHermesUserID, hashedToken), true, nil
+			return models.NewMQTTAuthInfos(cachedInternalHermesUserID, hashedToken), true, true, nil
 
 		} else {
 
@@ -144,11 +144,11 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 			env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "internalHermesUserID", []byte(newInternalHermesUserID))
 
 			// Return MQTTAuthInfos
-			return models.NewMQTTAuthInfos(newInternalHermesUserID, hashedToken), false, nil
+			return models.NewMQTTAuthInfos(newInternalHermesUserID, hashedToken), false, false, nil
 		}
 	}
 
-	return nil, false, errors.New(logruswrapper.CodeInvalidToken)
+	return nil, false, false, errors.New(logruswrapper.CodeInvalidToken)
 }
 
 // CheckIfUserAlreadyHasToken : Check if originalUserID is already matched with one token in redis
