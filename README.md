@@ -1,6 +1,6 @@
 # Hermes Messaging Management Microservice
 
-HERMES Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker. The system is designed with integration in mind in order to provide the developer with an easy to integrate authentication middleware.
+HERMES Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker. The system is designed with integration in mind in order to provide the developer with an easy to integrate a messaging service in his/her applications.
 
 
 
