@@ -3,7 +3,18 @@
 HERMES Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
 The system is designed with integration in mind in order to provide the developer with an easy to integrate a messaging service in his/her applications.
 
-
+## Table of Contents
+- [Hermes Messaging Management Microservice](#hermes-messaging-management-microservice)
+    - [Table of Contents](#table-of-contents)
+    - [Authentication & Authorization](#authentication--authorization)
+        - [Authentication](#authentication)
+            - [External Authentication Endpoint](#external-authentication-endpoint)
+            - [MQTT Authentication](#mqtt-authentication)
+        - [Authorization](#authorization)
+            - [Private Conversations](#private-conversations)
+            - [Group Conversations](#group-conversations)
+    - [External/Internal Mapping](#externalinternal-mapping)
+        - [Redis Stores](#redis-stores)
 
 
 ## Authentication  & Authorization
@@ -98,3 +109,19 @@ Each user gets assigned a topic with path `conversations/private/{internalHermes
 
 Each group conversation is assigned a topic with path `conversations/group/{groupID}` that members can publish and subscribe to.
 
+## External/Internal Mapping
+
+In order to be able to accept any kind of authentication system (JSON Web Token, Sessions, ...) we decided to map your application
+user identifiers and tokens with our own internal structures.
+
+The token remain preserved but application user identifiers are mapped with an internal HERMES user ID
+under the form of an UUID V4. This allows us to easily map one user to its according topic.
+
+These mappings are stored in a Redis instance.
+
+### Redis Stores
+
+|    Type   |            Key           |                           Value                           |
+|:---------:|:------------------------:|:---------------------------------------------------------:|
+| Key-Value |      session:{token}     |                   {internalHermesUserID}                  |
+|    Hash   | mapping:{originalUserID} | token {token} internalHermesUserID {internalHermesUserID} |
