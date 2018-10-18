@@ -57,7 +57,7 @@ services:
     build: redis/
     image: hermes/redis
     command: redis-server /usr/local/etc/redis/redis.conf
-    container_name: redis-real-time
+    container_name: hermes_redis-real-time
     ports:
       - "6380:6379"
     restart: always
