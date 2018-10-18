@@ -20,6 +20,7 @@ The system is designed with integration in mind in order to provide the develope
 ## Config
 
 HERMES requires these environment variables to be set :
+
 |              Name             |                          Description                          |
 |:-----------------------------:|:-------------------------------------------------------------:|
 |   HERMES_AUTH_CHECK_ENDPOINT  | External authentication endpoint provided by your application |
