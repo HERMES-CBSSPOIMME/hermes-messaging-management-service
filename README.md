@@ -13,6 +13,7 @@ The system is designed with integration in mind in order to provide the develope
         - [Authentication](#authentication)
             - [External Authentication Endpoint](#external-authentication-endpoint)
             - [MQTT Authentication](#mqtt-authentication)
+            - [VerneMQ ACL](#vernemq-acl)
         - [Authorization](#authorization)
             - [Private Conversations](#private-conversations)
             - [Group Conversations](#group-conversations)
@@ -98,6 +99,9 @@ At the MQTT level each user credentials are represented with the following mappi
 | clientID | internalHermesUserID |
 | username | internalHermesUserID |
 | password |         token        |
+
+
+#### VerneMQ ACL
 
 VerneMQ ACLs are stored in a MongoDB Collection named `vmq_acl_auth` with the following schema : 
 
