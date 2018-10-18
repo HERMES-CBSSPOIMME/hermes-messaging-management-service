@@ -34,6 +34,7 @@ Config file must have the following structure :
     "tokenValidationRegex": "mytokenregex"
 }
 }
+```
 
 |              Field            |                          Description                          |
 |:-----------------------------:|:-------------------------------------------------------------:|
