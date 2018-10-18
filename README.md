@@ -16,7 +16,7 @@ The system is designed with integration in mind in order to provide the develope
 
 ### Authentication 
 
-As HERMES is designed in a way that its system doesn't need access to existing project databases, that for obvious security and integration reasons. 
+HERMES is designed in a way that its system doesn't need access to existing project databases, that for obvious security and integration reasons. 
 
 The identity **verification process must then be managed by your application side**.
 
