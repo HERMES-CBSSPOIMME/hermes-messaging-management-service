@@ -108,7 +108,6 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 	err = json.NewDecoder(r.Body).Decode(&reqBody)
 
 	if err != nil {
-		// TODO: Change this to invalid JSON
 		return errors.New(logruswrapper.CodeInvalidJSON)
 	}
 

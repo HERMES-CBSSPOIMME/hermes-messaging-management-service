@@ -1,5 +1,7 @@
 # Hermes Messaging Management Microservice
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/cab714ac578daa72645c/maintainability)](https://codeclimate.com/github/HERMES-CBSSPOIMME/hermes-messaging-management-service/maintainability)
+
 Hermes Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
 The system is designed with integration in mind in order to provide developers with an easy to integrate messaging service in their applications.
 
