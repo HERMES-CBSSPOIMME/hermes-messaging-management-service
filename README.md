@@ -129,7 +129,11 @@ MQTT Topics authorization are managed the following way :
 #### Private Conversations
 This serve as an authentication mechanism to identify a message sender, something that's not provided by MQTT.
 
-Each user gets assigned a sender topic prefix path under the form of `conversations/private/{internalHermesUserID}`. In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/private/{internalHermesUserID}/+` topic wildcard. Each user will then subscribe the `conversations/private/+/{internalHermesUserID}` topic wildcard in order to be able to receive message. 
+Each user gets assigned a sender topic prefix path under the form of `conversations/private/{internalHermesUserID}`. 
+
+In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/private/{internalHermesUserID}/+` topic wildcard. 
+
+Each user will then subscribe the `conversations/private/+/{internalHermesUserID}` topic wildcard in order to be able to receive message. 
 
 In MQTT terms this means that on creation the user gets assigned the following ACLs :
 
@@ -141,7 +145,11 @@ In MQTT terms this means that on creation the user gets assigned the following A
 
 #### Group Conversations
 
-Each group conversation is assigned a topic with path `conversations/group/{groupID}`. In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/group/{groupID}/{internalHermesUserID}` topic. Then each group members will have to subscribe the `conversations/group/{groupID}/+`  topic wildcard in order to receive messages from all members.
+Each group conversation is assigned a topic with path `conversations/group/{groupID}`. 
+
+In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/group/{groupID}/{internalHermesUserID}` topic. 
+
+Then each group members will have to subscribe the `conversations/group/{groupID}/+`  topic wildcard in order to receive messages from all members.
 
 This means the following MQTT ACLs are created for each user on group creation :
   
@@ -150,4 +158,6 @@ This means the following MQTT ACLs are created for each user on group creation :
 | conversations/group/{groupID}/{internalHermesuserID}/+ |    ✅    |     ✅ <sup>1</sup>   |
 | conversations/group/{groupID}/+                        |    ❌     |    ✅               |
 
-<sup>1</sup> Implicit due to wildcard subscription. Note that you'll have to discard messages client side as one user sending a message will also receive its own message due to this configuration. 
+<sup>1</sup> Implicit due to wildcard subscription. 
+
+Note that you'll have to discard messages client side as one user sending a message will also receive its own message due to this configuration. 
