@@ -150,4 +150,4 @@ This means the following MQTT ACLs are created for each user on group creation :
 | conversations/group/{groupID}/{internalHermesuserID}/+ |    ✅    |     ✅ <sup>1</sup>   |
 | conversations/group/{groupID}/+                        |    ❌     |    ✅               |
 
-<sup>1</sup>Implicit due to wildcard subscription. Note that you'll have to discard messages client side as one user sending a message will also receive its own message due to this configuration. 
+<sup>1</sup> Implicit due to wildcard subscription. Note that you'll have to discard messages client side as one user sending a message will also receive its own message due to this configuration. 
