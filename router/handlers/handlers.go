@@ -31,7 +31,11 @@ func AddVerneMQACL(env *models.Env, w http.ResponseWriter, r *http.Request) erro
 	token := r.Header.Get("token")
 
 	// Check if token has valid format (According to regex provided by environment variable)
-	tokenHasValidFormat := checkers.IsTokenValid(env, token)
+	tokenHasValidFormat, err := checkers.IsTokenValid(env, token)
+
+	if err != nil {
+		return err
+	}
 
 	// If token is not formatted correctly, return an error response
 	if !tokenHasValidFormat {
@@ -81,7 +85,11 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 	token := r.Header.Get("token")
 
 	// Check if token has valid format (According to regex provided by environment variable)
-	tokenHasValidFormat := checkers.IsTokenValid(env, token)
+	tokenHasValidFormat, err := checkers.IsTokenValid(env, token)
+
+	if err != nil {
+		return err
+	}
 
 	// If token is not formatted correctly, return an error response
 	if !tokenHasValidFormat {

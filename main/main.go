@@ -3,6 +3,8 @@ package main
 import (
 	// Native Go Libs
 	fmt "fmt"
+	"log"
+	"os"
 
 	// Project Libs
 	models "hermes-messaging-service/models"
@@ -46,6 +48,10 @@ var (
 
 func main() {
 
+	if os.Getenv("HERMES_CONFIG_FILE_PATH") == "" {
+		log.Fatalf("HERMES_CONFIG_FILE_PATH Environment variable must be set !")
+	}
+
 	// Get MongoDB communication interface
 	// If an error occurs, program is set to panic
 	mongoDB := models.NewMongoDB(MongoDBURL)
@@ -62,7 +68,11 @@ func main() {
 	}
 
 	// Dynamically load config
-	env.RefreshConfig()
+	err := env.RefreshConfig()
+
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 
 	router.Listen(env)
 

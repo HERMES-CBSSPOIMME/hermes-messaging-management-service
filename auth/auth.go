@@ -44,7 +44,11 @@ func CheckAuthentication(env *models.Env, token string) (*models.MQTTAuthInfos, 
 	} else {
 
 		// If no : Verify with external endpoint
-		env.RefreshConfig()
+		err = env.RefreshConfig()
+
+		if err != nil {
+			return nil, false, false, err
+		}
 
 		MQTTAuthInfos, wasCached, wasTokenUpdated, err := VerifyTokenWithExternalEndpoint(env, token, hashedToken)
 

@@ -1,6 +1,14 @@
 package models
 
-import "os"
+import (
+	"encoding/json"
+	"io/ioutil"
+	"os"
+)
+
+var (
+	configFilePath = os.Getenv("HERMES_CONFIG_FILE_PATH")
+)
 
 // Env : Execution environment containing Datastore communication interfaces (Redis, MongoDB) & Config
 type Env struct {
@@ -11,15 +19,24 @@ type Env struct {
 
 // Config : Global Config
 type Config struct {
-	AuthenticationCheckEndpoint string
-	TokenValidationRegex        string
+	AuthenticationCheckEndpoint string `json:"authenticationCheckEndpoint"`
+	TokenValidationRegex        string `json:"tokenValidationRegex"`
 }
 
 // RefreshConfig : Load current environment values in config
-func (env *Env) RefreshConfig() {
+func (env *Env) RefreshConfig() error {
 
-	env.Config = Config{
-		AuthenticationCheckEndpoint: os.Getenv("HERMES_AUTH_CHECK_ENDPOINT"),
-		TokenValidationRegex:        os.Getenv("HERMES_TOKEN_VALIDATION_REGEX"),
+	data, err := ioutil.ReadFile(configFilePath)
+
+	if err != nil {
+		return err
 	}
+
+	err = json.Unmarshal(data, &env.Config)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

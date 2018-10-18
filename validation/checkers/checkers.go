@@ -7,13 +7,17 @@ import (
 )
 
 // IsTokenValid : Checks if parameter matches regex
-func IsTokenValid(env *models.Env, s string) bool {
+func IsTokenValid(env *models.Env, s string) (bool, error) {
 
 	// Refresh config to get actual environment values
-	env.RefreshConfig()
+	err := env.RefreshConfig()
+
+	if err != nil {
+		return false, err
+	}
 
 	// RegexToken : Regex validation for token (Provided by use through environment variable)
 	RegexToken := regexp.MustCompile(env.Config.TokenValidationRegex)
 
-	return RegexToken.MatchString(s)
+	return RegexToken.MatchString(s), nil
 }

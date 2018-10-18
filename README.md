@@ -24,8 +24,21 @@ Hermes requires these environment variables to be set :
 
 |              Name             |                          Description                          |
 |:-----------------------------:|:-------------------------------------------------------------:|
-|   HERMES_AUTH_CHECK_ENDPOINT  | External authentication endpoint provided by your application |
-| HERMES_TOKEN_VALIDATION_REGEX |           Token format validation regular expression          |
+|   HERMES_CONFIG_FILE_PATH     |           Absolute path to your config.json file              |
+
+Config file must have the following structure : 
+
+```json {
+{
+    "authenticationCheckEndpoint": "https://www.myapp.com/myexternalauthendpoint",
+    "tokenValidationRegex": "mytokenregex"
+}
+}
+
+|              Field            |                          Description                          |
+|:-----------------------------:|:-------------------------------------------------------------:|
+|   authenticationCheckEndpoint | External authentication endpoint provided by your application |
+|   tokenValidationRegex        |           Token format validation regular expression          |
 
 ## External/Internal Mapping
 
@@ -147,6 +160,8 @@ In MQTT terms this means that on creation the user gets assigned the following A
 |:----------------------------------------------:|:-------:|:------------------:|
 | conversations/private/{internalHermesuserID}/+ |    ✅    |   ✅ <sup>1</sup>  |
 | conversations/private/+/{internalHermesuserID} |    ❌    |   ✅               |
+
+<sup>1</sup> _Implicit due to wildcard subscription._
 
 
 #### Group Conversations
