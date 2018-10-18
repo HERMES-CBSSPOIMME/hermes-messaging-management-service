@@ -158,19 +158,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f7a0d8b0d171a45e8d60a5cba0bd83bc276f08ea2a09ec7041c1533577f73975"
+  digest = "1:5e1ab53f3caacf5918a39d0db595de8131e4ea268265346b4dea1fde389ca286"
   name = "github.com/terryvogelsang/gocustomhttpresponse"
   packages = ["."]
   pruneopts = "UT"
-  revision = "9bb25a18d5523e39ae8940ca4a21de32d14e31c4"
+  revision = "633028a14efc7e3290201cf4b704fab307edcb8e"
 
 [[projects]]
   branch = "master"
-  digest = "1:5a9e638b691006f825822607d62c5939820fd2e4c4e9e9621270fa580b74b6d7"
+  digest = "1:3643b399b1d20ba96129dab7de73b0c2cffa82268b7dfb201db4e500628b037c"
   name = "github.com/terryvogelsang/logruswrapper"
   packages = ["."]
   pruneopts = "UT"
-  revision = "15faf8e48db8a9362690a3819835798f910bc855"
+  revision = "0cbc8d47f53dcbef521f8d1d36edacdc1ae236c1"
 
 [[projects]]
   branch = "master"
@@ -190,14 +190,16 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cb77e5934866333fa0784326a57e64c4da128001c94fbd1d29819d79bd3b1087"
+  digest = "1:7310f5459b88177d24e26c5ec7deb100b78ec03c0437d7a7aaec3c7eac333a55"
   name = "golang.org/x/crypto"
   packages = [
+    "bcrypt",
+    "blowfish",
     "pbkdf2",
     "ssh/terminal",
   ]
   pruneopts = "UT"
-  revision = "a92615f3c49003920a58dedcf32cf55022cefb8d"
+  revision = "0c41d7ab0a0ee717d4590a44bcb987dfd9e183eb"
 
 [[projects]]
   branch = "master"
@@ -272,6 +274,7 @@
     "github.com/satori/go.uuid",
     "github.com/terryvogelsang/gocustomhttpresponse",
     "github.com/terryvogelsang/logruswrapper",
+    "golang.org/x/crypto/bcrypt",
     "gopkg.in/go-playground/validator.v9",
     "gopkg.in/mgo.v2/bson",
   ]

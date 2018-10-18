@@ -5,6 +5,7 @@ import (
 	// Native Go Libs
 	json "encoding/json"
 	errors "errors"
+	"log"
 	http "net/http"
 
 	// Project Libs
@@ -34,15 +35,22 @@ func AddVerneMQACL(env *models.Env, w http.ResponseWriter, r *http.Request) erro
 
 	// If token is not formatted correctly, return an error response
 	if !tokenHasValidFormat {
+		log.Println("Invalid token format")
 		return errors.New(logruswrapper.CodeInvalidToken)
 	}
 
 	// Check authentication with provided endpoint
-	MQTTAuthInfos, err := auth.CheckAuthentication(env, token)
+	MQTTAuthInfos, wasCached, err := auth.CheckAuthentication(env, token)
 
 	// If an error occurs, token is invalid
 	if err != nil {
+		log.Println(err)
 		return errors.New(logruswrapper.CodeInvalidToken)
+	}
+
+	if wasCached {
+		log.Println("Already cached")
+		return errors.New(logruswrapper.CodeAlreadyExists)
 	}
 
 	// Construct MQTT User ACL with MQTT Auth Infos + default ACLs
@@ -51,6 +59,7 @@ func AddVerneMQACL(env *models.Env, w http.ResponseWriter, r *http.Request) erro
 	err = env.MongoDB.AddProfileACL(verneMQACL)
 
 	if err != nil {
+		log.Println(err)
 		return errors.New(logruswrapper.CodeInvalidToken)
 	}
 
@@ -75,7 +84,7 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 	}
 
 	// Check authentication with provided endpoint
-	MQTTAuthInfos, err := auth.CheckAuthentication(env, token)
+	MQTTAuthInfos, _, err := auth.CheckAuthentication(env, token)
 
 	// If an error occurs, token is invalid
 	if err != nil {
@@ -87,7 +96,7 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 
 	if err != nil {
 		// TODO: Change this to invalid JSON
-		return errors.New(logruswrapper.CodeInvalidToken)
+		return errors.New(logruswrapper.CodeInvalidJSON)
 	}
 
 	// Create new group conversation struct

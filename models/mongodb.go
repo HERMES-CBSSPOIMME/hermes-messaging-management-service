@@ -35,6 +35,7 @@ type MongoDBInterface interface {
 	AddProfileACL(verneMQACL *VerneMQACL) error
 	AuthorizePublishing(userID string, topic string) error
 	UpdateProfilesWithGroupACL(groupConversation *GroupConversation) error
+	UpdatePassHash(userID string, newPasshash string) error
 }
 
 // MongoDB : MongoDB communication interface
@@ -164,5 +165,26 @@ func (mongoDB *MongoDB) UpdateProfilesWithGroupACL(groupConversation *GroupConve
 			return err
 		}
 	}
+	return nil
+}
+
+// UpdatePassHash : Update passhash field in VerneMQ ACLs Collection Acls
+func (mongoDB *MongoDB) UpdatePassHash(userID string, newPasshash string) error {
+
+	_, err := mongoDB.VerneMQACLCollection.UpdateOne(
+		nil,
+		mongoBSON.NewDocument(
+			mongoBSON.EC.String("client_id", userID),
+		),
+		mongoBSON.NewDocument(
+			mongoBSON.EC.SubDocumentFromElements("$set",
+				mongoBSON.EC.String("passhash", newPasshash),
+			),
+		),
+	)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
