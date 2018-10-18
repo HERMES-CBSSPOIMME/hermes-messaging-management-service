@@ -101,18 +101,22 @@ At the MQTT level each user credentials are represented with the following mappi
 
 VerneMQ ACLs are stored in a MongoDB Collection named `vmq_acl_auth` with the following schema : 
 
-```json
+```
 {
-	"_id" : "5bc8541703e034b6be3b8870",
+	"_id" : ObjectId("5bc897e0a9e22f4273dd067a"),
 	"mountpoint" : "",
-	"client_id" : "3bf186ba-ede0-4e1e-8305-64767942229a",
-	"username" : "3bf186ba-ede0-4e1e-8305-64767942229a",
-	"passhash" : "$2a$14$uBvhPcRP2NGo4eMm.nAIgu6jIZXUMe9DZ9zdLvK03xGypzvBYZvYS",
+	"client_id" : "cff1c5b7-9508-49fa-af8a-a4009ac5f27f",
+	"username" : "cff1c5b7-9508-49fa-af8a-a4009ac5f27f",
+	"passhash" : "$2a$14$.q06pmH.XAlvIDuV9SsIFOSqI/Zf6OE3SfC4r4cm3uwc05cC0i70G",
 	"publish_acl" : [
-		"conversations/private/+"
+		{
+			"pattern" : "conversations/private/cff1c5b7-9508-49fa-af8a-a4009ac5f27f/+"
+		}
 	],
 	"subscribe_acl" : [
-		"conversations/private/3bf186ba-ede0-4e1e-8305-64767942229a"
+		{
+			"pattern" : "conversations/private/+/cff1c5b7-9508-49fa-af8a-a4009ac5f27f"
+		}
 	]
 }
 ```
@@ -123,12 +127,14 @@ Note `passhash` field is a [bcrypt](https://godoc.org/golang.org/x/crypto/bcrypt
 MQTT Topics authorization are managed the following way :
 
 #### Private Conversations
-Each user gets assigned a topic with path `conversations/private/{internalHermesUserID}`. Only this user can subscribe the topic but everyone can publish in it. In MQTT terms this means that on creation the user gets assigned the following ACLs :
+Each user gets assigned a sender topic prefix path under the form of `conversations/private/{internalHermesUserID}`. This grants us that each user can only publish on all sub-topics under the "private namespace" in an authenticated way. This serve as an authentication mechanism to identify a message sender, something that's not provided by MQTT. Each user also gets subscribe rights on `conversations/private/+/{internalHermesUserID}` in order to be able to receive message in an authenticated way. 
 
- |              Topic                          | Publish | Subscribe |
-|:--------------------------------------------:|:-------:|:---------:|
-| conversations/private/{internalHermesuserID} |    ❌    |     ✅    |
-|     conversations/private/+                  |    ✅    |     ❌    |
+In MQTT terms this means that on creation the user gets assigned the following ACLs :
+
+|              Topic                             | Publish | Subscribe |
+|:----------------------------------------------:|:-------:|:---------:|
+| conversations/private/{internalHermesuserID}/+ |    ✅    |     ❌   |
+| conversations/private/+/{internalHermesuserID} |    ❌     |    ✅    |
 
 
 #### Group Conversations

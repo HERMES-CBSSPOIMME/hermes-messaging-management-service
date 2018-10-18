@@ -155,11 +155,11 @@ func (mongoDB *MongoDB) UpdateProfilesWithGroupACL(groupConversation *GroupConve
 			mongoBSON.NewDocument(
 				mongoBSON.EC.SubDocumentFromElements("$push",
 					mongoBSON.EC.SubDocumentFromElements("publish_acl",
-						mongoBSON.EC.String("pattern", GroupConversationTopicPath+groupConversation.GroupConversationID)),
+						mongoBSON.EC.String("pattern", GroupConversationTopicPath+groupConversation.GroupConversationID+"/"+userID+"/+")),
 				),
 				mongoBSON.EC.SubDocumentFromElements("$push",
 					mongoBSON.EC.SubDocumentFromElements("subscribe_acl",
-						mongoBSON.EC.String("pattern", GroupConversationTopicPath+groupConversation.GroupConversationID)),
+						mongoBSON.EC.String("pattern", GroupConversationTopicPath+groupConversation.GroupConversationID+"+/"+userID)),
 				),
 			),
 		)

@@ -30,11 +30,11 @@ type ACL struct {
 // NewVerneMQACL : Return new VerneMQACL struct pointer
 func NewVerneMQACL(clientID string, username string, password string) *VerneMQACL {
 
-	clientOnlyACL := ACL{Pattern: PrivateConversationTopicPath + clientID}
-	allClientACL := ACL{Pattern: PrivateConversationTopicPath + "+"}
+	pubPrivateACL := ACL{Pattern: PrivateConversationTopicPath + clientID + "/+"}
+	subPrivateACL := ACL{Pattern: PrivateConversationTopicPath + "+/" + clientID}
 
-	subACLs := []*ACL{&clientOnlyACL}
-	pubACLs := []*ACL{&allClientACL}
+	subACLs := []*ACL{&subPrivateACL}
+	pubACLs := []*ACL{&pubPrivateACL}
 
 	return &VerneMQACL{
 		Mountpoint:   "",
