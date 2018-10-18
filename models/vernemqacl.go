@@ -7,12 +7,12 @@ const (
 
 // VerneMQACL : VerneMQ ACL
 type VerneMQACL struct {
-	Mountpoint   string   `json:"mountpoint" bson:"mountpoint"`
-	ClientID     string   `json:"clientID" bson:"client_id"`
-	Username     string   `json:"username" bson:"username"`
-	Passhash     string   `json:"passhash" bson:"passhash"`
-	PublishACL   []string `json:"publish_acl" bson:"publish_acl"`
-	SubscribeACL []string `json:"subscribe_acl" bson:"subscribe_acl"`
+	Mountpoint   string `json:"mountpoint" bson:"mountpoint"`
+	ClientID     string `json:"clientID" bson:"client_id"`
+	Username     string `json:"username" bson:"username"`
+	Passhash     string `json:"passhash" bson:"passhash"`
+	PublishACL   []*ACL `json:"publish_acl" bson:"publish_acl"`
+	SubscribeACL []*ACL `json:"subscribe_acl" bson:"subscribe_acl"`
 }
 
 // MQTTAuthInfos : MQTT auth informations
@@ -22,15 +22,27 @@ type MQTTAuthInfos struct {
 	Password string `json:"password"`
 }
 
+// ACL : ACL entry
+type ACL struct {
+	Pattern string `json:"pattern" bson:"pattern"`
+}
+
 // NewVerneMQACL : Return new VerneMQACL struct pointer
 func NewVerneMQACL(clientID string, username string, password string) *VerneMQACL {
+
+	clientOnlyACL := ACL{Pattern: PrivateConversationTopicPath + clientID}
+	allClientACL := ACL{Pattern: PrivateConversationTopicPath + "+"}
+
+	subACLs := []*ACL{&clientOnlyACL}
+	pubACLs := []*ACL{&allClientACL}
+
 	return &VerneMQACL{
 		Mountpoint:   "",
 		ClientID:     clientID,
 		Username:     username,
 		Passhash:     password,
-		SubscribeACL: []string{PrivateConversationTopicPath + clientID},
-		PublishACL:   []string{PrivateConversationTopicPath + "+"},
+		SubscribeACL: subACLs,
+		PublishACL:   pubACLs,
 	}
 }
 

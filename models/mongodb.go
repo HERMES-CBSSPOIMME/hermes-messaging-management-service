@@ -23,7 +23,7 @@ const (
 	PrivateConversationsCollection = "privateConversations"
 
 	// VerneMQACLCollection : MongoDB Collection containing VerneMQ ACLs
-	VerneMQACLCollection = "vmq_auth_acl"
+	VerneMQACLCollection = "vmq_acl_auth"
 
 	// GroupConversationCollection : MongoDB Collection containing group private conversations backups
 	GroupConversationCollection = "groupConversations"
@@ -154,10 +154,12 @@ func (mongoDB *MongoDB) UpdateProfilesWithGroupACL(groupConversation *GroupConve
 			),
 			mongoBSON.NewDocument(
 				mongoBSON.EC.SubDocumentFromElements("$push",
-					mongoBSON.EC.String("publish_acl", GroupConversationTopicPath+groupConversation.GroupConversationID),
+					mongoBSON.EC.SubDocumentFromElements("publish_acl",
+						mongoBSON.EC.String("pattern", GroupConversationTopicPath+groupConversation.GroupConversationID)),
 				),
 				mongoBSON.EC.SubDocumentFromElements("$push",
-					mongoBSON.EC.String("subscribe_acl", GroupConversationTopicPath+groupConversation.GroupConversationID),
+					mongoBSON.EC.SubDocumentFromElements("subscribe_acl",
+						mongoBSON.EC.String("pattern", GroupConversationTopicPath+groupConversation.GroupConversationID)),
 				),
 			),
 		)

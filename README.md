@@ -99,7 +99,7 @@ At the MQTT level each user credentials are represented with the following mappi
 | username | internalHermesUserID |
 | password |         token        |
 
-VerneMQ ACLs are stored in a MongoDB Collection named `vmq_auth_acl` with the following schema : 
+VerneMQ ACLs are stored in a MongoDB Collection named `vmq_acl_auth` with the following schema : 
 
 ```json
 {
