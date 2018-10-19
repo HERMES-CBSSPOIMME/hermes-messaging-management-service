@@ -125,7 +125,19 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 
 		// If user does not exists, remove from mapping
 		if doesExist {
-			tmp = append(tmp, member)
+
+			internalHermesUserID, err := env.Redis.HGet("mapping:"+member, "internalHermesUserID")
+
+			if err != nil {
+				// TODO: Add code an error occured
+				fmt.Println(err)
+				return errors.New(logruswrapper.CodeInvalidJSON)
+			}
+
+			// Remove potential duplicate of emitter user ID
+			if string(internalHermesUserID) != MQTTAuthInfos.ClientID {
+				tmp = append(tmp, string(internalHermesUserID))
+			}
 		}
 	}
 
