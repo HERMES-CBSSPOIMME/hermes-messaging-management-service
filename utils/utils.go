@@ -4,6 +4,11 @@ import (
 	log "log"
 )
 
+// MappingRequestBody : Request Body on Mapping Request
+type MappingRequestBody struct {
+	UserIDs []string `json:"userIDs"`
+}
+
 // GroupConversationBody : Request Body on Group Creation
 type GroupConversationBody struct {
 	Members []string `json:"members"`

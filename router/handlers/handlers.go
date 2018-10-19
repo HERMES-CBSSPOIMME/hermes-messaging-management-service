@@ -174,3 +174,56 @@ func CustomHandle(env *models.Env, handlers ...Handler) http.Handler {
 		}
 	})
 }
+
+// GetMappingForUsers : Get internal hermes user IDs
+func GetMappingForUsers(env *models.Env, w http.ResponseWriter, r *http.Request) error {
+
+	// Retrieve token from request header
+	token := r.Header.Get("token")
+
+	// Check if token has valid format (According to regex provided by environment variable)
+	tokenHasValidFormat, err := checkers.IsTokenValid(env, token)
+
+	if err != nil {
+		return err
+	}
+
+	// If token is not formatted correctly, return an error response
+	if !tokenHasValidFormat {
+		return errors.New(logruswrapper.CodeInvalidToken)
+	}
+
+	// Check authentication with provided endpoint
+	_, _, _, err = auth.CheckAuthentication(env, token)
+
+	// If an error occurs, token is invalid
+	if err != nil {
+		return errors.New(logruswrapper.CodeInvalidToken)
+	}
+
+	reqBody := utils.MappingRequestBody{}
+
+	err = json.NewDecoder(r.Body).Decode(&reqBody)
+
+	if err != nil {
+		return errors.New(logruswrapper.CodeInvalidJSON)
+	}
+
+	mappings := []models.Mapping{}
+
+	for _, userID := range reqBody.UserIDs {
+
+		internalHermesUserID, _ := env.Redis.HGet("mapping:"+userID, "internalHermesUserID")
+
+		fmt.Println(string(internalHermesUserID))
+		if string(internalHermesUserID) != "" {
+			mappings = append(mappings, models.Mapping{OriginalUserID: userID, InternalHermesUserID: string(internalHermesUserID)})
+		}
+	}
+
+	log := logruswrapper.NewEntry("MessagingService", "/profiles/mappings", logruswrapper.CodeSuccess)
+
+	gocustomhttpresponse.WriteResponse(mappings, log, w)
+
+	return nil
+}

@@ -24,8 +24,9 @@ func Listen(env *models.Env) {
 	v1 := r.PathPrefix("/v1").Subrouter()
 
 	// HelloWorld Endpoint
-	aclV1 := v1.PathPrefix("/profile").Subrouter()
+	aclV1 := v1.PathPrefix("/profiles").Subrouter()
 	aclV1.Handle("", handlers.CustomHandle(env, handlers.AddVerneMQACL)).Methods("POST")
+	aclV1.Handle("/mappings", handlers.CustomHandle(env, handlers.GetMappingForUsers)).Methods("POST")
 
 	conversationsV1 := v1.PathPrefix("/conversations").Subrouter()
 	conversationsV1.Handle("/group", handlers.CustomHandle(env, handlers.AddGroupConversation)).Methods("POST")
