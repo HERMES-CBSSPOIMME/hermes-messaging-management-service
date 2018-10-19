@@ -2,7 +2,7 @@ package checkers
 
 import (
 	// Project Libs
-	models "hermes-messaging-service/models"
+	models "hermes-messaging-management-service/models"
 	"regexp"
 )
 

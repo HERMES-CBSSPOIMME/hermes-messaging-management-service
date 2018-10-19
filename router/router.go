@@ -7,8 +7,8 @@ import (
 	http "net/http"
 
 	// Project Libs
-	models "hermes-messaging-service/models"
-	handlers "hermes-messaging-service/router/handlers"
+	models "hermes-messaging-management-service/models"
+	handlers "hermes-messaging-management-service/router/handlers"
 
 	// 3rd Party Libs
 	mux "github.com/gorilla/mux"

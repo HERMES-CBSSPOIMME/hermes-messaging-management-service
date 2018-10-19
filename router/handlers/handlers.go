@@ -9,10 +9,10 @@ import (
 	http "net/http"
 
 	// Project Libs
-	auth "hermes-messaging-service/auth"
-	models "hermes-messaging-service/models"
-	utils "hermes-messaging-service/utils"
-	checkers "hermes-messaging-service/validation/checkers"
+	auth "hermes-messaging-management-service/auth"
+	models "hermes-messaging-management-service/models"
+	utils "hermes-messaging-management-service/utils"
+	checkers "hermes-messaging-management-service/validation/checkers"
 
 	// 3rd Party Libs
 	gocustomhttpresponse "github.com/terryvogelsang/gocustomhttpresponse"

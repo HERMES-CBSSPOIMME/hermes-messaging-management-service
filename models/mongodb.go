@@ -6,7 +6,7 @@ import (
 	context "context"
 
 	// Project Libs
-	utils "hermes-messaging-service/utils"
+	utils "hermes-messaging-management-service/utils"
 
 	// 3rd Party Libs
 	mongoBSON "github.com/mongodb/mongo-go-driver/bson"

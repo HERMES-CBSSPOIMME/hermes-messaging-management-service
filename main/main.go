@@ -7,8 +7,8 @@ import (
 	"os"
 
 	// Project Libs
-	models "hermes-messaging-service/models"
-	router "hermes-messaging-service/router"
+	models "hermes-messaging-management-service/models"
+	router "hermes-messaging-management-service/router"
 )
 
 var (

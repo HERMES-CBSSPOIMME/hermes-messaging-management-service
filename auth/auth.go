@@ -11,8 +11,8 @@ import (
 	bcrypt "golang.org/x/crypto/bcrypt"
 
 	// Project Libs
-	models "hermes-messaging-service/models"
-	utils "hermes-messaging-service/utils"
+	models "hermes-messaging-management-service/models"
+	utils "hermes-messaging-management-service/utils"
 
 	// 3rd Party Libs
 	uuid "github.com/satori/go.uuid"
