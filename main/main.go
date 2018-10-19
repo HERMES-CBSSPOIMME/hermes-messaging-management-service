@@ -1,14 +1,11 @@
 package main
 
 import (
-	// Native Go Libs
 	fmt "fmt"
-	"log"
-	"os"
-
-	// Project Libs
 	models "hermes-messaging-management-service/models"
 	router "hermes-messaging-management-service/router"
+	log "log"
+	os "os"
 )
 
 var (

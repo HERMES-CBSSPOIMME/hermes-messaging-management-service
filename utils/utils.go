@@ -1,7 +1,6 @@
 package utils
 
 import (
-	// Native Go Libs
 	log "log"
 )
 

@@ -1,14 +1,9 @@
 package models
 
 import (
-
-	// Native Go Libs
 	context "context"
-
-	// Project Libs
 	utils "hermes-messaging-management-service/utils"
 
-	// 3rd Party Libs
 	mongoBSON "github.com/mongodb/mongo-go-driver/bson"
 	mongo "github.com/mongodb/mongo-go-driver/mongo"
 	bson "gopkg.in/mgo.v2/bson"

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	fmt "fmt"
 
 	redisgo "github.com/gomodule/redigo/redis"
 )

@@ -1,17 +1,15 @@
 package router
 
 import (
-
-	// Native Go Libs
 	json "encoding/json"
 	errors "errors"
-	"fmt"
+	fmt "fmt"
 	auth "hermes-messaging-management-service/auth"
 	models "hermes-messaging-management-service/models"
 	utils "hermes-messaging-management-service/utils"
-	checkers "hermes-messaging-management-service/validation/checkers" // 3rd Party Libs
+	checkers "hermes-messaging-management-service/validation/checkers"
 	log "log"
-	http "net/http" // Project Libs
+	http "net/http"
 
 	gocustomhttpresponse "github.com/terryvogelsang/gocustomhttpresponse"
 	logruswrapper "github.com/terryvogelsang/logruswrapper"

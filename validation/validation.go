@@ -1,8 +1,6 @@
 package validation
 
 import (
-
-	// 3rd Party Libs
 	validator "gopkg.in/go-playground/validator.v9"
 )
 

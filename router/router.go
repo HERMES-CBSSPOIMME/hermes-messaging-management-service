@@ -1,16 +1,11 @@
 package router
 
 import (
-
-	// Native Go Libs
 	fmt "fmt"
-	http "net/http"
-
-	// Project Libs
 	models "hermes-messaging-management-service/models"
 	handlers "hermes-messaging-management-service/router/handlers"
+	http "net/http"
 
-	// 3rd Party Libs
 	mux "github.com/gorilla/mux"
 	cors "github.com/rs/cors"
 )

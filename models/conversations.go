@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // GroupConversation : Group conversation struct

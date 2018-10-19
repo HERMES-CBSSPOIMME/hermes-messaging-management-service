@@ -1,9 +1,8 @@
 package checkers
 
 import (
-	// Project Libs
 	models "hermes-messaging-management-service/models"
-	"regexp"
+	regexp "regexp"
 )
 
 // IsTokenValid : Checks if parameter matches regex

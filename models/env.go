@@ -1,9 +1,9 @@
 package models
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"os"
+	json "encoding/json"
+	ioutil "io/ioutil"
+	os "os"
 )
 
 var (
