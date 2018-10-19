@@ -11,7 +11,7 @@ type RedisInterface interface {
 	CloseConnection() error
 	Get(key string) ([]byte, error)
 	HGet(key string, field string) ([]byte, error)
-	HSet(key string, field string, value []byte) error
+	HSet(key string, field1 string, value1 []byte, field2 string, value2 []byte) error
 	Set(key string, value []byte) error
 	Exists(key string) (bool, error)
 	Delete(key string) error
@@ -71,15 +71,11 @@ func (redis *Redis) HGet(key string, field string) ([]byte, error) {
 	return data, nil
 }
 
-func (redis *Redis) HSet(key string, field string, value []byte) error {
+func (redis *Redis) HSet(key string, field1 string, value1 []byte, field2 string, value2 []byte) error {
 
-	_, err := redis.Connection.Do("HSET", key, field, value)
+	_, err := redis.Connection.Do("HSET", key, field1, value1, field2, value2)
 	if err != nil {
-		v := string(value)
-		if len(v) > 15 {
-			v = v[0:12] + "..."
-		}
-		return fmt.Errorf("error setting key %s to %s : %v", key, v, err)
+		return fmt.Errorf("error setting key %s to %s : %v", key, value1, err)
 	}
 	return nil
 }

@@ -1,22 +1,16 @@
 package auth
 
 import (
-
-	// Native Go Libs
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	http "net/http"
-
-	bcrypt "golang.org/x/crypto/bcrypt"
-
-	// Project Libs
 	models "hermes-messaging-management-service/models"
 	utils "hermes-messaging-management-service/utils"
+	http "net/http"
 
-	// 3rd Party Libs
 	uuid "github.com/satori/go.uuid"
 	logruswrapper "github.com/terryvogelsang/logruswrapper"
+	bcrypt "golang.org/x/crypto/bcrypt"
 )
 
 // CheckAuthentication : Return MQTT Auth Infos if provided auth token is valid,
@@ -143,9 +137,7 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 			env.Redis.Set(fmt.Sprintf("session:%s", token), []byte(newInternalHermesUserID))
 
 			// Store mapping in Redis
-			// TODO: Change Hset method to be able to set multiple field at a time
-			env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token", []byte(token))
-			env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "internalHermesUserID", []byte(newInternalHermesUserID))
+			env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token", []byte(token), "internalHermesUserID", []byte(newInternalHermesUserID))
 
 			// Return MQTTAuthInfos
 			return models.NewMQTTAuthInfos(newInternalHermesUserID, hashedToken), false, false, nil
@@ -188,7 +180,7 @@ func UpdateRedisAndMongoDBWithNewToken(env *models.Env, originalUserID string, i
 
 	// Update Redis Mapping Values :
 	// mapping:{originalUserID} token {oldToken} ... --> mapping:{originalUserID} token {newToken} ...
-	err = env.Redis.HSet(fmt.Sprintf("mapping:%s", originalUserID), "token", []byte(newToken))
+	err = env.Redis.HSet(fmt.Sprintf("mapping:%s", originalUserID), "token", []byte(newToken), "internalHermesUserID", nil)
 
 	if err != nil {
 		return err

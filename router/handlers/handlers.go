@@ -5,16 +5,14 @@ import (
 	// Native Go Libs
 	json "encoding/json"
 	errors "errors"
-	"log"
-	http "net/http"
-
-	// Project Libs
+	"fmt"
 	auth "hermes-messaging-management-service/auth"
 	models "hermes-messaging-management-service/models"
 	utils "hermes-messaging-management-service/utils"
-	checkers "hermes-messaging-management-service/validation/checkers"
+	checkers "hermes-messaging-management-service/validation/checkers" // 3rd Party Libs
+	log "log"
+	http "net/http" // Project Libs
 
-	// 3rd Party Libs
 	gocustomhttpresponse "github.com/terryvogelsang/gocustomhttpresponse"
 	logruswrapper "github.com/terryvogelsang/logruswrapper"
 )
@@ -111,10 +109,31 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 		return errors.New(logruswrapper.CodeInvalidJSON)
 	}
 
+	// create a zero-length slice with the same underlying array
+	tmp := reqBody.Members[:0]
+
+	// Check if provided users exist, if not do not store it in DB
+	for _, member := range reqBody.Members {
+
+		doesExist, err := env.Redis.Exists("mapping:" + member)
+
+		if err != nil {
+			// TODO: Add code an error occured
+			fmt.Println(err)
+			return errors.New(logruswrapper.CodeInvalidJSON)
+		}
+
+		// If user does not exists, remove from mapping
+		if doesExist {
+			tmp = append(tmp, member)
+		}
+	}
+
+	// Set group conversation with existing members
+	reqBody.Members = tmp
+
 	// Create new group conversation struct
 	groupConv := models.NewGroupConversation(reqBody.Name, append(reqBody.Members, MQTTAuthInfos.ClientID))
-
-	// TODO: Add check if provided users exist
 
 	// Store conversation infos in DB
 	err = env.MongoDB.AddGroupConversation(groupConv)
