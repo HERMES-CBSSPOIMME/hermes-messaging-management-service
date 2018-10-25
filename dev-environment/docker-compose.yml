@@ -12,7 +12,7 @@ services:
     container_name: hermes_vernemq
     links:
       - mongodb
-    networks: 
+    networks:
       - hermes
 
   mongodb:
@@ -27,7 +27,7 @@ services:
       - "27017:27017"
     volumes:
        - $HOME/data:/data/db
-    networks: 
+    networks:
       - hermes
 
   mongo-express:
@@ -39,7 +39,10 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-    networks: 
+      ME_CONFIG_MONGODB_SERVER: hermes_mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+    networks:
       - hermes
 
   redis-sessions-cache:
@@ -50,7 +53,7 @@ services:
     ports:
       - "6379:6379"
     restart: always
-    networks: 
+    networks:
       - hermes
 
   redis-real-time:
@@ -61,7 +64,7 @@ services:
     ports:
       - "6380:6379"
     restart: always
-    networks: 
+    networks:
       - hermes
 
 networks:
