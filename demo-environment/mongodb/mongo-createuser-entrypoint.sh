@@ -2,11 +2,11 @@
 
 # Constants
 
-MONGODB_PORT=37017
+MONGODB_PORT=27017
 MONGODB_ROOT_USER=root
 MONGODB_ROOT_PASS=example
 
-HERMES_USER=hermes-user
+HERMES_USER=hermes-demo-user
 HERMES_USER_PASSWORD=example
 
 
