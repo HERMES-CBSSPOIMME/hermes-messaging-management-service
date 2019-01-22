@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# TODO: Change credentials handling method 
+# TODO: Change credentials handling method
 
 # Constants
 PROJECT=wave
@@ -18,4 +18,4 @@ echo "==========================================================================
 echo "Building & starting containers ..."
 echo "====================================================================================================="
 # Build & start services
-docker-compose build && docker-compose -p $PROJECT up -d
+docker-compose build && docker-compose up -d
