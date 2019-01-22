@@ -3,7 +3,7 @@
 # TODO: Change credentials handling method 
 
 # Constants
-PROJECT=hermes
+PROJECT=wave
 
 printf "\n"
 echo "====================================================================================================="
@@ -11,11 +11,7 @@ echo "Removing previous containers ..."
 echo "====================================================================================================="
 
 # Stop and remove previous container
-docker rm -f "${PROJECT}_vernemq"
-docker rm -f "${PROJECT}_mongodb"
-docker rm -f "${PROJECT}_mongoexpress"
-docker rm -f "${PROJECT}_redis-sessions-cache"
-docker rm -f "${PROJECT}_redis-real-time"
+docker-compose down
 
 printf "\n"
 echo "====================================================================================================="

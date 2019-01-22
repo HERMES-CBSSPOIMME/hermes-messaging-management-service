@@ -4,22 +4,22 @@ version: '3'
 services:
   vernemq:
     build: vernemq/
-    image: hermes/vernemq
+    image: wave/vernemq
     restart: always
     ports:
       - "1883:1883"
       - "8080:8080"
-    container_name: hermes_vernemq
+    container_name: wave_vernemq
     links:
       - mongodb
     networks:
-      - hermes
+      - wave
 
   mongodb:
     build: mongodb/
-    image: hermes/mongo
+    image: wave/mongo
     restart: always
-    container_name: hermes_mongodb
+    container_name: wave_mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -28,45 +28,45 @@ services:
     volumes:
        - $HOME/data:/data/db
     networks:
-      - hermes
+      - wave
 
   mongo-express:
     image: mongo-express
-    container_name: hermes_mongoexpress
+    container_name: wave_mongoexpress
     restart: always
     ports:
       - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_SERVER: hermes_mongodb
+      ME_CONFIG_MONGODB_SERVER: wave_mongodb
       ME_CONFIG_MONGODB_PORT: 27017
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
     networks:
-      - hermes
+      - wave
 
   redis-sessions-cache:
     build: redis/
-    image: hermes/redis
+    image: wave/redis
     command: redis-server /usr/local/etc/redis/redis.conf
-    container_name: hermes_redis-sessions-cache
+    container_name: wave_redis-sessions-cache
     ports:
       - "6379:6379"
     restart: always
     networks:
-      - hermes
+      - wave
 
   redis-real-time:
     build: redis/
-    image: hermes/redis
+    image: wave/redis
     command: redis-server /usr/local/etc/redis/redis.conf
-    container_name: hermes_redis-real-time
+    container_name: wave_redis-real-time
     ports:
       - "6380:6379"
     restart: always
     networks:
-      - hermes
+      - wave
 
 networks:
-  hermes:
+  wave:
     driver: "bridge"
