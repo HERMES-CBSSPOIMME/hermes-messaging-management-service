@@ -1,5 +1,5 @@
 # Official VerneMQ Docker Image
-FROM erlio/docker-vernemq:1.6.0
+FROM erlio/docker-vernemq:latest
 
-# Add Custom Config File 
+# Add Custom Config File
 ADD vernemq.custom.conf /etc/vernemq/vernemq.conf
