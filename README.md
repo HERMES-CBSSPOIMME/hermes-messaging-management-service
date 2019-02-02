@@ -1,4 +1,4 @@
-# Hermes Messaging Management Microservice
+# Wave Messaging Management Microservice
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/cab714ac578daa72645c/maintainability)](https://codeclimate.com/github/HERMES-CBSSPOIMME/hermes-messaging-management-service/maintainability)
 
