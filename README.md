@@ -2,11 +2,11 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/cab714ac578daa72645c/maintainability)](https://codeclimate.com/github/HERMES-CBSSPOIMME/hermes-messaging-management-service/maintainability)
 
-Hermes Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
+Wave Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
 The system is designed with integration in mind in order to provide developers with an easy to integrate messaging service in their applications.
 
 ## Table of Contents
-- [Hermes Messaging Management Microservice](#hermes-messaging-management-microservice)
+- [Wave Messaging Management Microservice](#Wave-messaging-management-microservice)
     - [Table of Contents](#table-of-contents)
     - [Config](#config)
     - [External/Internal Mapping](#externalinternal-mapping)
@@ -22,7 +22,7 @@ The system is designed with integration in mind in order to provide developers w
 
 ## Config
 
-Hermes requires these environment variables to be set :
+Wave requires these environment variables to be set :
 
 |              Name             |                          Description                          |
 |:-----------------------------:|:-------------------------------------------------------------:|
@@ -64,7 +64,7 @@ These mappings are stored in a Redis instance.
 > that somebody really is who he claims to be while
 >**Authorization** refers to rules that determine 
 >who is allowed to do what. E.g. Matteo may be 
->authorized to publish and subscribe to a MQTT topic, while Terry is only authorised to publish it.
+>authorized to publish and subscribe to a MQTT topic, while Terry is only authorised to publish on it.
 
 ### Authentication 
 
@@ -79,7 +79,7 @@ The service will then verify the token authenticity by calling an external endpo
 
 Internally, Hermes system will keep an internal mapping in a Redis instance matching your application users IDs and tokens with our internal identifiers and password.
 
-Hermes requires that your web server endpoint respond to requests in a certain predefined format. Our system will issue a `GET` request with a `token` HTTP header containing your application user token and an `empty body`.
+Wave requires that your web server endpoint respond to requests in a certain predefined format. Our system will issue a `GET` request with a `token` HTTP header containing your application user token and an `empty body`.
 
 Your endpoint should respond the following :
 
