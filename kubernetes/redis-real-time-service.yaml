@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    app: redis-real-time
+  name: redis-real-time
+spec:
+  ports:
+  - name: "6380"
+    port: 6380
+    targetPort: 6379
+  selector:
+    app: redis-real-time
+status:
+  loadBalancer: {}

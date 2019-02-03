@@ -4,12 +4,12 @@ version: '3'
 services:
   vernemq:
     build: vernemq/
-    image: wave/vernemq
+    image: waveim/vernemq
     restart: always
     ports:
       - "1883:1883"
       - "8080:8080"
-    container_name: wave_vernemq
+    container_name: wave-vernemq
     links:
       - mongodb
     networks:
@@ -17,9 +17,9 @@ services:
 
   mongodb:
     build: mongodb/
-    image: wave/mongo
+    image: waveim/mongo
     restart: always
-    container_name: wave_mongodb
+    container_name: wave-mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -32,7 +32,7 @@ services:
 
   mongo-express:
     image: mongo-express
-    container_name: wave_mongoexpress
+    container_name: wave-mongoexpress
     restart: always
     ports:
       - "8081:8081"
@@ -47,7 +47,7 @@ services:
 
   redis-sessions-cache:
     build: redis/
-    image: wave/redis
+    image: waveim/redis
     command: redis-server /usr/local/etc/redis/redis.conf
     container_name: wave_redis-sessions-cache
     ports:
@@ -58,9 +58,9 @@ services:
 
   redis-real-time:
     build: redis/
-    image: wave/redis
+    image: waveim/redis
     command: redis-server /usr/local/etc/redis/redis.conf
-    container_name: wave_redis-real-time
+    container_name: wave-redis-real-time
     ports:
       - "6380:6379"
     restart: always

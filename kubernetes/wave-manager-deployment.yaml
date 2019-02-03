@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: wave-manager
+    labels :
+        app: wave-manager
+spec:
+    replicas: 1
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                app: wave-manager
+        spec:
+            containers:
+            - image: waveim/management-service:latest
+              name: wave-manager
+              ports:
+                - containerPort: 8085
+            restartPolicy: Always
+status: {}

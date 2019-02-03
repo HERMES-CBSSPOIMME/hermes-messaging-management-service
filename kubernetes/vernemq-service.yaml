@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    app: vernemq
+  name: vernemq
+spec:
+  ports:
+  - name: "1883"
+    port: 1883
+    targetPort: 1883
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: vernemq
+  type: LoadBalancer
+status:
+  loadBalancer: {}

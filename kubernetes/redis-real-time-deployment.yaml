@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    app: redis-real-time
+  name: redis-real-time
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: redis-real-time
+    spec:
+      containers:
+      - args:
+        - redis-server
+        - /usr/local/etc/redis/redis.conf
+        image: waveim/redis
+        name: wave-redis-real-time
+        ports:
+        - containerPort: 6379
+        resources: {}
+      restartPolicy: Always
+status: {}
