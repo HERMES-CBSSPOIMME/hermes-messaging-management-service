@@ -13,7 +13,7 @@ var (
 	// TODO: Change these to be fetched automatically with Kubernetes Secrets
 
 	// MongoDBHost : MongoDB Host
-	MongoDBHost = "mongodb"
+	MongoDBHost = "mongodb.default.svc.cluster.local"
 
 	// MongoDBPort : MongoDB Port
 	MongoDBPort = 27017
@@ -31,7 +31,7 @@ var (
 	MongoDBURL = fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", MongoDBUsername, MongoDBPassword, MongoDBHost, MongoDBPort, MongoDBName)
 
 	// RedisHost : Redis Port
-	RedisHost = "redis-sessions-cache"
+	RedisHost = "redis-sessions-cache.default.svc.cluster.local"
 
 	// RedisPort : Redis Port
 	RedisPort = 6379
