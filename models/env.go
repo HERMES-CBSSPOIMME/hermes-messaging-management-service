@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	configFilePath = os.Getenv("HERMES_CONFIG_FILE_PATH")
+	configFilePath = os.Getenv("WAVE_CONFIG_FILE_PATH")
 )
 
 // Env : Execution environment containing Datastore communication interfaces (Redis, MongoDB) & Config

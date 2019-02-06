@@ -2,10 +2,10 @@ package main
 
 import (
 	fmt "fmt"
-	models "hermes-messaging-management-service/models"
-	router "hermes-messaging-management-service/router"
 	log "log"
 	os "os"
+	models "wave-messaging-management-service/models"
+	router "wave-messaging-management-service/router"
 )
 
 var (
@@ -19,13 +19,13 @@ var (
 	MongoDBPort = 27017
 
 	// MongoDBUsername : MongoDB Username
-	MongoDBUsername = "hermes-user"
+	MongoDBUsername = "wave-user"
 
 	// MongoDBPassword : MongoDB Password
 	MongoDBPassword = "example"
 
 	// MongoDBName : MongoDB Database Name
-	MongoDBName = "hermesDB"
+	MongoDBName = "waveDB"
 
 	// MongoDBURL : MongoDB Connection URL
 	MongoDBURL = fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", MongoDBUsername, MongoDBPassword, MongoDBHost, MongoDBPort, MongoDBName)
@@ -45,8 +45,8 @@ var (
 
 func main() {
 
-	if os.Getenv("HERMES_CONFIG_FILE_PATH") == "" {
-		log.Fatalf("HERMES_CONFIG_FILE_PATH Environment variable must be set !")
+	if os.Getenv("WAVE_CONFIG_FILE_PATH") == "" {
+		log.Fatalf("WAVE_CONFIG_FILE_PATH Environment variable must be set !")
 	}
 
 	// Get MongoDB communication interface

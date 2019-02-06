@@ -1,8 +1,8 @@
 package checkers
 
 import (
-	models "hermes-messaging-management-service/models"
 	regexp "regexp"
+	models "wave-messaging-management-service/models"
 )
 
 // IsTokenValid : Checks if parameter matches regex

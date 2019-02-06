@@ -1,6 +1,6 @@
 # Wave Messaging Management Microservice
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/cab714ac578daa72645c/maintainability)](https://codeclimate.com/github/HERMES-CBSSPOIMME/hermes-messaging-management-service/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/cab714ac578daa72645c/maintainability)](https://codeclimate.com/github/WAVE-CBSSPOIMME/wave-messaging-management-service/maintainability)
 
 Wave Instant Messaging Management Microservice aims to provide a secure ACL management interface on top of VerneMQ MQTT broker.
 The system is designed with integration in mind in order to provide developers with an easy to integrate messaging service in their applications.
@@ -26,7 +26,7 @@ Wave requires these environment variables to be set :
 
 |              Name             |                          Description                          |
 |:-----------------------------:|:-------------------------------------------------------------:|
-|   HERMES_CONFIG_FILE_PATH     |           Absolute path to your config.json file              |
+|   WAVE_CONFIG_FILE_PATH     |           Absolute path to your config.json file              |
 
 Config file must have the following structure : 
 
@@ -46,7 +46,7 @@ Config file must have the following structure :
 
 In order to be able to accept any kind of authentication system (JSON Web Token, Sessions, ...) we decided to map your application user identifiers and tokens with our own internal structures.
 
-The token remain preserved but application user identifiers are mapped with an internal Hermes user ID
+The token remain preserved but application user identifiers are mapped with an internal Wave user ID
 under the form of an UUID V4. This allows us to easily map one user to its according topic.
 
 These mappings are stored in a Redis instance.
@@ -55,8 +55,8 @@ These mappings are stored in a Redis instance.
 
 |    Type   |            Key           |                           Value                           |
 |:---------:|:------------------------:|:---------------------------------------------------------:|
-| Key-Value |      session:{token}     |                   {internalHermesUserID}                  |
-|    Hash   | mapping:{originalUserID} | token {token} internalHermesUserID {internalHermesUserID} |
+| Key-Value |      session:{token}     |                   {internalWaveUserID}                  |
+|    Hash   | mapping:{originalUserID} | token {token} internalWaveUserID {internalWaveUserID} |
 
 ## Authentication  & Authorization
 
@@ -68,7 +68,7 @@ These mappings are stored in a Redis instance.
 
 ### Authentication 
 
-Hermes is designed in a way that its system doesn't need access to existing project databases, that for obvious security and integration reasons. 
+Wave is designed in a way that its system doesn't need access to existing project databases, that for obvious security and integration reasons. 
 
 The identity **verification process must then be managed by your application side**.
 
@@ -77,7 +77,7 @@ Each request emitted to this service must contain the authentication token of yo
 
 The service will then verify the token authenticity by calling an external endpoint (Provided by your application) responsible to verify the received token and send back informations. 
 
-Internally, Hermes system will keep an internal mapping in a Redis instance matching your application users IDs and tokens with our internal identifiers and password.
+Internally, Wave system will keep an internal mapping in a Redis instance matching your application users IDs and tokens with our internal identifiers and password.
 
 Wave requires that your web server endpoint respond to requests in a certain predefined format. Our system will issue a `GET` request with a `token` HTTP header containing your application user token and an `empty body`.
 
@@ -108,10 +108,10 @@ Content-Length: 34
 
 At the MQTT level each user credentials are represented with the following mapping :
 
-|   MQTT   |        Hermes        |
+|   MQTT   |        Wave        |
 |:--------:|:--------------------:|
-| clientID | internalHermesUserID |
-| username | internalHermesUserID |
+| clientID | internalWaveUserID |
+| username | internalWaveUserID |
 | password |         token        |
 
 
@@ -150,18 +150,18 @@ This brings the user the ability to know exactly who's the sender of a message.
 
 #### Private Conversations
 
-Each user gets assigned a sender topic prefix path under the form of `conversations/private/{internalHermesUserID}`. 
+Each user gets assigned a sender topic prefix path under the form of `conversations/private/{internalWaveUserID}`. 
 
-In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/private/{internalHermesUserID}/+` topic wildcard. 
+In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/private/{internalWaveUserID}/+` topic wildcard. 
 
-Each user will then subscribe the `conversations/private/+/{internalHermesUserID}` topic wildcard in order to be able to receive message. 
+Each user will then subscribe the `conversations/private/+/{internalWaveUserID}` topic wildcard in order to be able to receive message. 
 
 In MQTT terms this means that on creation the user gets assigned the following ACLs :
 
 |              Topic                             | Publish |     Subscribe      |
 |:----------------------------------------------:|:-------:|:------------------:|
-| conversations/private/{internalHermesuserID}/+ |    ✅    |   ✅ <sup>1</sup>  |
-| conversations/private/+/{internalHermesuserID} |    ❌    |   ✅               |
+| conversations/private/{internalWaveuserID}/+ |    ✅    |   ✅ <sup>1</sup>  |
+| conversations/private/+/{internalWaveuserID} |    ❌    |   ✅               |
 
 <sup>1</sup> _Implicit due to wildcard subscription._
 
@@ -170,7 +170,7 @@ In MQTT terms this means that on creation the user gets assigned the following A
 
 Each group conversation is assigned a topic with path `conversations/group/{groupID}`. 
 
-In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/group/{groupID}/{internalHermesUserID}` topic. 
+In order for the subscriber to be able to trust the sender of a message a user can only publish on `conversations/group/{groupID}/{internalWaveUserID}` topic. 
 
 Then each group members will have to subscribe the `conversations/group/{groupID}/+`  topic wildcard in order to receive messages from all members.
 
@@ -178,7 +178,7 @@ This means the following MQTT ACLs are created for each user on group creation :
   
 |              Topic                                     | Publish | Subscribe            |
 |:------------------------------------------------------:|:-------:|:--------------------:|
-| conversations/group/{groupID}/{internalHermesuserID}/+ |    ✅    |     ✅ <sup>1</sup>  |
+| conversations/group/{groupID}/{internalWaveuserID}/+ |    ✅    |     ✅ <sup>1</sup>  |
 | conversations/group/{groupID}/+                        |    ❌     |    ✅               |
 
 <sup>1</sup> _Implicit due to wildcard subscription._

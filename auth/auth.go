@@ -4,9 +4,9 @@ import (
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	models "hermes-messaging-management-service/models"
-	utils "hermes-messaging-management-service/utils"
 	http "net/http"
+	models "wave-messaging-management-service/models"
+	utils "wave-messaging-management-service/utils"
 
 	uuid "github.com/satori/go.uuid"
 	logruswrapper "github.com/terryvogelsang/logruswrapper"
@@ -118,29 +118,29 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 		json.NewDecoder(res.Body).Decode(&authCheckerBody)
 
 		// Check if user already has a cached token
-		cachedInternalHermesUserID, cachedOldToken, _ := CheckIfUserAlreadyHasToken(env, authCheckerBody.OriginalUserID)
+		cachedInternalWaveUserID, cachedOldToken, _ := CheckIfUserAlreadyHasToken(env, authCheckerBody.OriginalUserID)
 
 		if cachedOldToken != "" {
 
 			// If yes : Update Redis with new token and revoke the older token
-			UpdateRedisAndMongoDBWithNewToken(env, authCheckerBody.OriginalUserID, cachedInternalHermesUserID, cachedOldToken, token, hashedToken)
+			UpdateRedisAndMongoDBWithNewToken(env, authCheckerBody.OriginalUserID, cachedInternalWaveUserID, cachedOldToken, token, hashedToken)
 
 			// Return MQTTAuthInfos
-			return models.NewMQTTAuthInfos(cachedInternalHermesUserID, hashedToken), true, true, nil
+			return models.NewMQTTAuthInfos(cachedInternalWaveUserID, hashedToken), true, true, nil
 
 		} else {
 
 			// If no : Create new token store + mapping in Redis
-			newInternalHermesUserID := uuid.NewV4().String()
+			newInternalWaveUserID := uuid.NewV4().String()
 
 			// Store token in Redis
-			env.Redis.Set(fmt.Sprintf("session:%s", token), []byte(newInternalHermesUserID))
+			env.Redis.Set(fmt.Sprintf("session:%s", token), []byte(newInternalWaveUserID))
 
 			// Store mapping in Redis
-			env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token", []byte(token), "internalHermesUserID", []byte(newInternalHermesUserID))
+			env.Redis.HSet(fmt.Sprintf("mapping:%s", authCheckerBody.OriginalUserID), "token", []byte(token), "internalWaveUserID", []byte(newInternalWaveUserID))
 
 			// Return MQTTAuthInfos
-			return models.NewMQTTAuthInfos(newInternalHermesUserID, hashedToken), false, false, nil
+			return models.NewMQTTAuthInfos(newInternalWaveUserID, hashedToken), false, false, nil
 		}
 	}
 
@@ -151,7 +151,7 @@ func VerifyTokenWithExternalEndpoint(env *models.Env, token string, hashedToken 
 func CheckIfUserAlreadyHasToken(env *models.Env, originalUserID string) (string, string, error) {
 
 	cachedOldToken, err := env.Redis.HGet(fmt.Sprintf("mapping:%s", originalUserID), "token")
-	cachedInternalUserID, err := env.Redis.HGet(fmt.Sprintf("mapping:%s", originalUserID), "internalHermesUserID")
+	cachedInternalUserID, err := env.Redis.HGet(fmt.Sprintf("mapping:%s", originalUserID), "internalWaveUserID")
 
 	if err != nil {
 		return "", "", err
@@ -161,10 +161,10 @@ func CheckIfUserAlreadyHasToken(env *models.Env, originalUserID string) (string,
 }
 
 // UpdateRedisAndMongoDBWithNewToken : Update old token store and mapping with new token
-func UpdateRedisAndMongoDBWithNewToken(env *models.Env, originalUserID string, internalHermesUserID string, oldToken string, newToken string, newHashedToken string) error {
+func UpdateRedisAndMongoDBWithNewToken(env *models.Env, originalUserID string, internalWaveUserID string, oldToken string, newToken string, newHashedToken string) error {
 
 	// Update MongoDB Profile
-	err := env.MongoDB.UpdatePassHash(internalHermesUserID, newHashedToken)
+	err := env.MongoDB.UpdatePassHash(internalWaveUserID, newHashedToken)
 
 	if err != nil {
 		return err
@@ -180,7 +180,7 @@ func UpdateRedisAndMongoDBWithNewToken(env *models.Env, originalUserID string, i
 
 	// Update Redis Mapping Values :
 	// mapping:{originalUserID} token {oldToken} ... --> mapping:{originalUserID} token {newToken} ...
-	err = env.Redis.HSet(fmt.Sprintf("mapping:%s", originalUserID), "token", []byte(newToken), "internalHermesUserID", nil)
+	err = env.Redis.HSet(fmt.Sprintf("mapping:%s", originalUserID), "token", []byte(newToken), "internalWaveUserID", nil)
 
 	if err != nil {
 		return err

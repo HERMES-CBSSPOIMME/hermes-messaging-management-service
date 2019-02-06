@@ -2,7 +2,7 @@ package models
 
 import (
 	context "context"
-	utils "hermes-messaging-management-service/utils"
+	utils "wave-messaging-management-service/utils"
 
 	mongoBSON "github.com/mongodb/mongo-go-driver/bson"
 	mongo "github.com/mongodb/mongo-go-driver/mongo"
@@ -11,8 +11,8 @@ import (
 
 const (
 
-	// HermesDatabaseName : Database name of the Hermes project as defined in MongoDB
-	HermesDatabaseName = "hermesDB"
+	// WaveDatabaseName : Database name of the Wave project as defined in MongoDB
+	WaveDatabaseName = "waveDB"
 
 	// PrivateConversationsCollection : MongoDB Collection containing private conversations backups
 	PrivateConversationsCollection = "privateConversations"
@@ -36,7 +36,7 @@ type MongoDBInterface interface {
 // MongoDB : MongoDB communication interface
 type MongoDB struct {
 	Client                         *mongo.Client
-	HermesDB                       *mongo.Database
+	WaveDB                         *mongo.Database
 	PrivateConversationsCollection *mongo.Collection
 	VerneMQACLCollection           *mongo.Collection
 	GroupConversationCollection    *mongo.Collection
@@ -59,17 +59,17 @@ func NewMongoDB(connectionURL string) *MongoDB {
 	}
 
 	// Get database reference
-	hermesDB := client.Database(HermesDatabaseName)
+	waveDB := client.Database(WaveDatabaseName)
 
 	// Get collections references
-	privateConversationsCollection := hermesDB.Collection(PrivateConversationsCollection)
-	vmqACLCollection := hermesDB.Collection(VerneMQACLCollection)
-	groupConversationCollection := hermesDB.Collection(GroupConversationCollection)
+	privateConversationsCollection := waveDB.Collection(PrivateConversationsCollection)
+	vmqACLCollection := waveDB.Collection(VerneMQACLCollection)
+	groupConversationCollection := waveDB.Collection(GroupConversationCollection)
 
 	// Return new MongoDB abstraction struct
 	return &MongoDB{
 		Client:                         client,
-		HermesDB:                       hermesDB,
+		WaveDB:                         waveDB,
 		PrivateConversationsCollection: privateConversationsCollection,
 		VerneMQACLCollection:           vmqACLCollection,
 		GroupConversationCollection:    groupConversationCollection,

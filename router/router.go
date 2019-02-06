@@ -2,9 +2,9 @@ package router
 
 import (
 	fmt "fmt"
-	models "hermes-messaging-management-service/models"
-	handlers "hermes-messaging-management-service/router/handlers"
 	http "net/http"
+	models "wave-messaging-management-service/models"
+	handlers "wave-messaging-management-service/router/handlers"
 
 	mux "github.com/gorilla/mux"
 	cors "github.com/rs/cors"

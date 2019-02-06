@@ -4,12 +4,12 @@ import (
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	auth "hermes-messaging-management-service/auth"
-	models "hermes-messaging-management-service/models"
-	utils "hermes-messaging-management-service/utils"
-	checkers "hermes-messaging-management-service/validation/checkers"
 	log "log"
 	http "net/http"
+	auth "wave-messaging-management-service/auth"
+	models "wave-messaging-management-service/models"
+	utils "wave-messaging-management-service/utils"
+	checkers "wave-messaging-management-service/validation/checkers"
 
 	gocustomhttpresponse "github.com/terryvogelsang/gocustomhttpresponse"
 	logruswrapper "github.com/terryvogelsang/logruswrapper"
@@ -124,7 +124,7 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 		// If user does not exists, remove from mapping
 		if doesExist {
 
-			internalHermesUserID, err := env.Redis.HGet("mapping:"+member, "internalHermesUserID")
+			internalWaveUserID, err := env.Redis.HGet("mapping:"+member, "internalWaveUserID")
 
 			if err != nil {
 				// TODO: Add code an error occured
@@ -133,8 +133,8 @@ func AddGroupConversation(env *models.Env, w http.ResponseWriter, r *http.Reques
 			}
 
 			// Remove potential duplicate of emitter user ID
-			if string(internalHermesUserID) != MQTTAuthInfos.ClientID {
-				tmp = append(tmp, string(internalHermesUserID))
+			if string(internalWaveUserID) != MQTTAuthInfos.ClientID {
+				tmp = append(tmp, string(internalWaveUserID))
 			}
 		}
 	}
@@ -175,7 +175,7 @@ func CustomHandle(env *models.Env, handlers ...Handler) http.Handler {
 	})
 }
 
-// GetMappingForUsers : Get internal hermes user IDs
+// GetMappingForUsers : Get internal wave user IDs
 func GetMappingForUsers(env *models.Env, w http.ResponseWriter, r *http.Request) error {
 
 	// Retrieve token from request header
@@ -213,11 +213,11 @@ func GetMappingForUsers(env *models.Env, w http.ResponseWriter, r *http.Request)
 
 	for _, userID := range reqBody.UserIDs {
 
-		internalHermesUserID, _ := env.Redis.HGet("mapping:"+userID, "internalHermesUserID")
+		internalWaveUserID, _ := env.Redis.HGet("mapping:"+userID, "internalWaveUserID")
 
-		fmt.Println(string(internalHermesUserID))
-		if string(internalHermesUserID) != "" {
-			mappings = append(mappings, models.Mapping{OriginalUserID: userID, InternalHermesUserID: string(internalHermesUserID)})
+		fmt.Println(string(internalWaveUserID))
+		if string(internalWaveUserID) != "" {
+			mappings = append(mappings, models.Mapping{OriginalUserID: userID, InternalWaveUserID: string(internalWaveUserID)})
 		}
 	}
 
