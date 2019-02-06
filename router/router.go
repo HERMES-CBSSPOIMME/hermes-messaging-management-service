@@ -33,7 +33,7 @@ func Listen(env *models.Env) {
 
 	corsHandler := cors.New(cors.Options{
 		AllowedHeaders:   []string{"X-Requested-With"},
-		AllowedOrigins:   []string{"http://frontend.localhost"},
+		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "HEAD", "POST", "PUT", "OPTIONS"},
 	})
