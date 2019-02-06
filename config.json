@@ -1,4 +1,4 @@
 {
-    "authenticationCheckEndpoint": "http://www.mocky.io/v2/5bc897bf32000055005a0012",
-    "tokenValidationRegex": "^tokenaaaa$"
+    "authenticationCheckEndpoint": "http://ec2-3-122-195-163.eu-central-1.compute.amazonaws.com:8086/v1/users/auth",
+    "tokenValidationRegex": "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+\\/=]*$"
 }

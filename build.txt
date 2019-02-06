@@ -1,0 +1,1 @@
+env CGO_ENABLED=0 go build -o management-service main/main.go
